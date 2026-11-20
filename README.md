@@ -1,15 +1,17 @@
 <p align="center">
-  <img src="docs/brand/icon-192.png" width="96" height="96" alt="Rent Evidence logo: a black-and-white cat">
+  <img src="docs/brand/icon-192.png" width="96" height="96" alt="Rent Control JUDO logo: a black-and-white cat">
 </p>
 
-<h1 align="center">Rent Evidence</h1>
+<h1 align="center">Rent Control JUDO</h1>
+
+<p align="center"><i>Using the force of the market, against itself.</i></p>
 
 <p align="center"><b>Gather your own evidence to challenge a rent increase at the First-tier Tribunal: automatically, every day.</b></p>
 
 <p align="center"><a href="https://rent-evidence-demo.pages.dev"><b>Live demo →</b></a></p>
 
 <p align="center">
-  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/dashboard-dark.jpg" width="820" alt="Public dashboard: a rent £210 a month above the market rate, with key figures and charts"></a>
+  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/hero-dark.jpg" width="820" alt="Rent Control JUDO: the cat logo over a glowing chart of agreed rents, with the example rent marked"></a>
 </p>
 
 Since 1 May 2026 (the Renters' Rights Act 2025), a private landlord in England can only raise the rent with a
@@ -25,16 +27,21 @@ copy so others can see how it works.
 
 ## The public dashboard
 
-One number up front (how far the rent sits above the local median), three headline figures (live listings,
+A full-screen opening section (the cat over the live rent curve, with the example rent and the expected proposal
+marked) scrolls smoothly down to the evidence: one number up front (how far the rent sits above the local median), three headline figures (live listings,
 agreed lets analysed, recent comparables), and four charts: how many recent lets were cheaper, a grid showing
 the rent above the median at every distance and period (the group behind the headline outlined), agreed rents
 over time against the official ONS average, and every let by distance. Hover anything for the figures behind it.
 It follows the viewer's light or dark setting and works on a phone.
 
 <p align="center">
+  <img src="docs/screenshots/dashboard-dark.jpg" width="820" alt="The evidence: a rent £210 a month above the local median, with key figures, the distribution of agreed rents and the distance-by-period grid">
+</p>
+
+<p align="center">
   <img src="docs/screenshots/charts-light.jpg" width="560" alt="Light mode: agreed rents over time, and agreed rents by distance with the example rent marked">
   &nbsp;
-  <img src="docs/screenshots/mobile-dark.jpg" width="230" alt="Phone view in dark mode">
+  <img src="docs/screenshots/mobile-dark.jpg" width="230" alt="Phone view of the opening section in dark mode">
 </p>
 
 The full working (evidence log, every adjustment line by line, tribunal decisions, a spreadsheet laid out for the

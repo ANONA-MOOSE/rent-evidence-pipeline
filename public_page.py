@@ -111,7 +111,7 @@ def render():
     d = summary()
     import html as _h
     url = (oc.PUBLIC_SITE_URL or "").rstrip("/") + "/"
-    title = "Rent Evidence: live rent vs market dashboard"
+    title = "Rent Control JUDO: using the force of the market, against itself"
     gap = d["gap"]
     desc = "A live, open-source rent evidence dashboard."
     if gap is not None:
@@ -127,21 +127,21 @@ TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rent evidence demo</title>
+<title>Rent Control JUDO</title>
 <meta name="description" content="__DESC__">
 <meta name="theme-color" content="#0b0c0e">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Rent Evidence">
+<meta property="og:site_name" content="Rent Control JUDO">
 <meta property="og:title" content="__TITLE__">
 <meta property="og:description" content="__DESC__">
 <meta property="og:url" content="__URL__">
 <meta property="og:image" content="__URL__og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Rent Evidence: a cat logo and the words 'Live dashboard: a real rent versus the market, updated daily'">
+<meta property="og:image:alt" content="Rent Control JUDO: a cat logo over a glowing rent chart, with the words 'Using the force of the market, against itself'">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="__URL__og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,14 +229,99 @@ svg .lbl,svg .strong{paint-order:stroke;stroke:var(--surface);stroke-width:4px;s
 @media (max-width:520px){.live .long{display:none}}
 footer{margin-top:22px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--ink2)}
+/* ---------- Hero: Rent Control JUDO ---------- */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+.jd{position:relative;min-height:100svh;overflow:hidden;overflow:clip;color:#f4f3ef;background:#141813;isolation:isolate;display:flex;flex-direction:column}
+.jd-bg{position:absolute;inset:-12%;z-index:-3;filter:blur(46px) saturate(1.15);
+  background:
+    radial-gradient(40% 48% at 18% 32%, rgba(132,170,56,1), transparent 70%),
+    radial-gradient(30% 34% at 34% 16%, rgba(190,214,96,.7), transparent 70%),
+    radial-gradient(36% 42% at 70% 58%, rgba(236,134,42,.95), transparent 70%),
+    radial-gradient(28% 32% at 88% 84%, rgba(224,110,38,.7), transparent 70%),
+    radial-gradient(52% 48% at 52% 96%, rgba(62,76,90,.95), transparent 72%),
+    radial-gradient(34% 34% at 92% 12%, rgba(57,135,229,.30), transparent 70%),
+    linear-gradient(165deg,#1e2717 0%,#2a2f27 46%,#222a33 100%);
+  animation:jdDrift 28s ease-in-out infinite alternate}
+@keyframes jdDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-2%,1.5%,0) scale(1.04)}100%{transform:translate3d(1.5%,-1%,0) scale(1.02)}}
+.jd-mesh{position:absolute;inset:0;z-index:-2;opacity:.55;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:3px 3px}
+.jd-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(10,12,10,.5) 0%,rgba(10,12,10,.18) 55%,rgba(10,12,10,.05) 100%),
+             linear-gradient(180deg,rgba(0,0,0,.15) 0%,transparent 30%,transparent 70%,var(--page) 100%)}
+.jd-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px clamp(16px,3vw,40px)}
+.jd-brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;letter-spacing:-.01em;color:#fff;text-decoration:none;white-space:nowrap}
+.jd-brand img{width:36px;height:36px;border-radius:10px;display:block}
+.jd-links{display:flex;gap:clamp(16px,2.6vw,40px);font-size:15px}
+.jd-links a{color:rgba(244,243,239,.82);text-decoration:none;font-weight:500}
+.jd-links a:hover{color:#fff}
+.jd-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b0b0b;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:999px;white-space:nowrap}
+.jd-pill:focus-visible,.jd-ghost:focus-visible,.jd-links a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.jd-body{flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:center;gap:clamp(24px,4vw,64px);
+  padding:clamp(24px,6vh,72px) clamp(16px,3vw,40px) clamp(56px,10vh,110px);max-width:1360px;width:100%;margin:0 auto;box-sizing:border-box}
+.jd-title{font-weight:800;font-size:clamp(52px,8.4vw,128px);line-height:.92;letter-spacing:-.045em;margin:0;text-wrap:balance}
+.jd-title .o{color:#ff7d3b;display:block}
+.jd-tag{font-size:clamp(20px,2.2vw,30px);line-height:1.25;letter-spacing:-.02em;font-weight:500;color:rgba(244,243,239,.9);margin:22px 0 0;max-width:22ch}
+.jd-rule{height:2px;max-width:520px;margin:30px 0 14px;background:linear-gradient(90deg,#ff7d3b,rgba(255,125,59,.15))}
+.jd-keys{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13.5px;color:rgba(244,243,239,.78)}
+.jd-keys span{display:inline-flex;align-items:center;gap:8px}
+.jd-keys i{display:inline-block;width:34px;height:8px;border-radius:999px}
+.jd-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.jd-ghost{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.jd-card{position:relative;aspect-ratio:1/1;width:100%;max-width:520px;justify-self:end;border-radius:28px;
+  background:rgba(12,14,16,.58);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
+.jd-card svg{position:absolute;inset:0;width:100%;height:100%}
+.jd-cat{position:absolute;left:42%;top:48%;width:56%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 28px rgba(57,135,229,.45)) drop-shadow(0 12px 30px rgba(0,0,0,.5));
+  animation:jdFloat 7s ease-in-out infinite}
+@keyframes jdFloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-53%)}}
+.jd-stat{position:absolute;left:18px;bottom:16px;right:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;font-size:12.5px;color:rgba(244,243,239,.75)}
+.jd-stat b{display:block;font-size:26px;letter-spacing:-.03em;color:#fff;line-height:1}
+.jd-down{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(244,243,239,.75);text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.jd-down svg{width:22px;height:22px;animation:jdBob 2.2s ease-in-out infinite}
+@keyframes jdBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-card{justify-self:start;max-width:420px}.jd-links{display:none}}
+@media (max-width:520px){.jd-pill{padding:10px 16px;font-size:14px}.jd-nav > .jd-pill{display:none}.jd-card{max-width:none}.jd-down{display:none}}
+@media (prefers-reduced-motion: reduce){.jd-bg,.jd-cat,.jd-down svg{animation:none}}
+.dash-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px;scroll-margin-top:16px}
+.dash-head h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.035em}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+@media print{.jd{display:none}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<main>
-  <nav>
-    <div class="brand"><img class="mark" src="logo-64.png" width="30" height="30" alt="">Rent Evidence</div>
-    <div class="live"><span class="dot" aria-hidden="true"></span>Live<span class="long"> · updated</span>&nbsp;<span id="gen"></span></div>
+<header class="jd" aria-label="Rent Control JUDO">
+  <div class="jd-bg" aria-hidden="true"></div><div class="jd-mesh" aria-hidden="true"></div><div class="jd-shade" aria-hidden="true"></div>
+  <nav class="jd-nav">
+    <a class="jd-brand" href="#top" id="top"><img src="logo-64.png" width="36" height="36" alt="">Rent Control JUDO</a>
+    <div class="jd-links"><a href="#evidence">The evidence</a><a href="#h-trend">Trend</a><a href="#h-how">How it works</a><a id="jd-code" href="#">Code</a></div>
+    <a class="jd-pill" href="#evidence">See the evidence</a>
   </nav>
+  <div class="jd-body">
+    <div>
+      <h1 class="jd-title">Rent Control <span class="o">JUDO</span></h1>
+      <p class="jd-tag">Using the force of the market, against itself.</p>
+      <div class="jd-rule" aria-hidden="true"></div>
+      <div class="jd-keys"><span><i style="background:#3987e5"></i>Market</span><span><i style="background:#e2652f"></i>This rent</span><span><i style="background:#e66767"></i>Proposal</span></div>
+      <div class="jd-ctas"><a class="jd-pill" href="#evidence">See the evidence ↓</a><a class="jd-ghost" id="jd-code2" href="#">View the code</a></div>
+    </div>
+    <div class="jd-card" aria-hidden="true">
+      <svg id="jd-chart" viewBox="0 0 400 400" preserveAspectRatio="none"></svg>
+      <img class="jd-cat" src="logo-512.png" alt="">
+      <div class="jd-stat"><div><b id="jd-gap"></b>a month above the local median</div><div style="text-align:right"><b id="jd-n"></b>agreed lets compared</div></div>
+    </div>
+  </div>
+  <a class="jd-down" href="#evidence" aria-label="Scroll to the evidence"><span>Scroll</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
+</header>
+<main>
+  <div class="dash-head" id="evidence">
+    <h2>The evidence</h2>
+    <div class="live"><span class="dot" aria-hidden="true"></span>Live<span class="long"> · updated</span>&nbsp;<span id="gen"></span></div>
+  </div>
 
   <div class="grid">
     <section class="card s12 hero" aria-label="Headline">
@@ -472,7 +557,10 @@ function trend() {
   const x = d => m.l + (new Date(d) - t0) / (t1 - t0) * (W - m.l - m.r), y = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
   const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Agreed rents over time against this tenancy's rent"}, box);
   ticks(lo, hi, 5).forEach(t => { el("line", {x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: "gl"}, svg); tx(svg, m.l - 8, y(t) + 4, gbp(t), null, "end"); });
-  for (let yr = t0.getFullYear(); yr <= t1.getFullYear(); yr++) { const d = new Date(yr, 0, 1); if (d >= t0) tx(svg, x(d), H - 6, String(yr), null, "middle"); }
+  // Year labels at each 1 January; if the series starts mid-year, label that first year at the start too.
+  if (t0.getMonth() > 0 || t0.getDate() > 1) tx(svg, x(t0), H - 6, String(t0.getFullYear()), null, "start");
+  for (let yr = t0.getFullYear(); yr <= t1.getFullYear(); yr++) { const d = new Date(yr, 0, 1);
+    if (d >= t0) { el("line", {x1: x(d), x2: x(d), y1: H - m.b, y2: H - m.b + 4, class: "ax"}, svg); tx(svg, x(d), H - 6, String(yr), null, "middle"); } }
   const xm = s => x(s + "-15");
   el("path", {d: T.map((t, i) => (i ? "L" : "M") + xm(t.m) + "," + y(t.q3)).join("") + [...T].reverse().map(t => "L" + xm(t.m) + "," + y(t.q1)).join("") + "Z", fill: "var(--mkt-wash)"}, svg);
   el("path", {d: T.map((t, i) => (i ? "L" : "M") + xm(t.m) + "," + y(t.med)).join(""), fill: "none", stroke: "var(--mkt)", "stroke-width": 2.5, "stroke-linejoin": "round"}, svg);
@@ -517,8 +605,44 @@ function byKm() {
   tx(svg, W - m.r, y(RENT) - 8, `This rent ${gbp(RENT)}`, "strong", "end");
 }
 
-function all() { header(); heroBar(); dist(); cells(); trend(); byKm(); }
-all();
+function judo() {
+  if (D.repo) { $("#jd-code").href = D.repo; $("#jd-code2").href = D.repo; } else { $("#jd-code").remove(); $("#jd-code2").remove(); }
+  $("#jd-gap").textContent = D.gap == null ? "–" : gbp(Math.abs(D.gap));
+  $("#jd-n").textContent = P.length;
+  // the card's chart: grid, the real distribution as a glowing blue curve, this rent as an orange line
+  const svg = $("#jd-chart"); svg.innerHTML = "";
+  const S = 400, pad = 24, lo = Math.min(...P, RENT) - 150, hi = Math.max(...P, RENT) + 150;
+  const x = v => pad + (v - lo) / (hi - lo) * (S - 2 * pad);
+  const K = kde(P, lo, hi, 80), ym = Math.max(...K.map(k => k[1])), y = d => S * 0.82 - d / ym * S * 0.6;
+  const defs = el("defs", {}, svg), f = el("filter", {id: "jdglow", filterUnits: "userSpaceOnUse", x: 0, y: 0, width: S, height: S}, defs);
+  el("feGaussianBlur", {stdDeviation: 6, result: "b"}, f); const mg = el("feMerge", {}, f); el("feMergeNode", {in: "b"}, mg); el("feMergeNode", {in: "SourceGraphic"}, mg);
+  for (let i = 1; i < 6; i++) { el("line", {x1: S * i / 6, x2: S * i / 6, y1: 0, y2: S, stroke: "rgba(255,255,255,.07)"}, svg);
+    el("line", {x1: 0, x2: S, y1: S * i / 6, y2: S * i / 6, stroke: "rgba(255,255,255,.07)"}, svg); }
+  el("path", {d: K.map((k, i) => (i ? "L" : "M") + x(k[0]) + "," + y(k[1])).join(""), fill: "none", stroke: "#3987e5", "stroke-width": 4, filter: "url(#jdglow)", "stroke-linecap": "round"}, svg);
+  el("line", {x1: x(RENT), x2: x(RENT), y1: S * .12, y2: S * .9, stroke: "#ff7d3b", "stroke-width": 4, filter: "url(#jdglow)"}, svg);
+  if (D.proposed) { const pm = (D.proposed[0] + D.proposed[1]) / 2; el("line", {x1: x(pm), x2: x(pm), y1: S * .2, y2: S * .9, stroke: "#e66767", "stroke-width": 2, "stroke-dasharray": "4 6", opacity: .8}, svg); }
+  // place the cat to the left of this rent's line, so the line stays visible beside it
+  const rx = x(RENT) / S * 100, w = Math.max(40, Math.min(56, rx * 0.9));
+  const cat = $(".jd-cat"); cat.style.width = w + "%"; cat.style.left = Math.max(w / 2 + 2, rx - w / 2 - 4) + "%";
+}
+
+function reveals() {
+  // Fade cards up as they come into view. Robust by design: position checks on scroll (no reliance on
+  // IntersectionObserver), and a safety net that shows everything after 2.5 s whatever happens.
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const els = [...document.querySelectorAll("main .card, main .dash-head")];
+  els.forEach((e, i) => { if (e.getBoundingClientRect().top > innerHeight * 0.92) { e.classList.add("reveal"); e.style.transitionDelay = (i % 3) * 60 + "ms"; } });
+  let ticking = false;
+  const check = () => { ticking = false; const lim = innerHeight * 0.94;
+    document.querySelectorAll(".reveal:not(.in)").forEach(e => { if (e.getBoundingClientRect().top < lim) e.classList.add("in"); }); };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(check); } }, {passive: true});
+  addEventListener("resize", check);
+  setTimeout(() => document.querySelectorAll(".reveal").forEach(e => e.classList.add("in")), 2500);
+  check();
+}
+
+function all() { header(); heroBar(); dist(); cells(); trend(); byKm(); judo(); }
+all(); reveals();
 let lw = innerWidth; addEventListener("resize", () => { if (Math.abs(innerWidth - lw) > 40) { lw = innerWidth; all(); } });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", all);
 </script>

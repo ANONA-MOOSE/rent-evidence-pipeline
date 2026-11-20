@@ -117,7 +117,7 @@ def build():
         f.write(html)
     import shutil
     brand = os.path.join(HERE, "docs", "brand")
-    for name in ("favicon-32.png", "icon-192.png", "apple-touch-icon.png", "logo-64.png", "og.png"):
+    for name in ("favicon-32.png", "icon-192.png", "apple-touch-icon.png", "logo-64.png", "logo-512.png", "og.png"):
         if os.path.exists(os.path.join(brand, name)):
             shutil.copyfile(os.path.join(brand, name), os.path.join(OUT_DIR, name))
     with open(os.path.join(OUT_DIR, "_headers"), "w") as f:
