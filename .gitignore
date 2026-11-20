@@ -19,6 +19,7 @@
 !/defects_log.py
 !/epc_lookup.py
 !/public_site.py
+!/public_page.py
 !/docs/
 # never, even if named above
 config_local.py

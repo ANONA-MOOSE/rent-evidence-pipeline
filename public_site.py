@@ -104,10 +104,8 @@ def privacy_check(html):
 
 
 def build():
-    import dashboard
-    d = public_data()
-    html = dashboard.TEMPLATE.replace("/*__DATA__*/null", json.dumps(d, default=str).replace("</", "<\\/"))
-    html = html.replace("<title>Rent comparables</title>", "<title>Rent evidence demo</title>")
+    import public_page
+    html = public_page.render()
     problems = privacy_check(html)
     os.makedirs(OUT_DIR, exist_ok=True)
     path = os.path.join(OUT_DIR, "index.html")
