@@ -23,13 +23,6 @@ def _r(v):
     return round(v / ROUND_TO) * ROUND_TO if v else v
 
 
-def _months_ago(d):
-    try:
-        return (date.today() - date.fromisoformat(d[:10])).days / 30.44
-    except (TypeError, ValueError):
-        return None
-
-
 def _q(vals, p):
     v = sorted(vals)
     if not v:
@@ -47,7 +40,7 @@ def summary():
 
     usable = [r for r in rows if not r["exclude_reason"]]
     lets_all = [r for r in usable if r["status"] == "let_agreed"]
-    lets = [r for r in lets_all if r.get("price_loc") and (_months_ago(r["let_agreed_date"]) or 999) <= 24]
+    lets = analysis.lets_in_window((r for r in lets_all if r.get("price_loc")), oc.RADIUS_KM, 24)
     live = [r for r in usable if r["status"] == "available"]
 
     # Market estimate: similarity-weighted average of the adjustment grid, without the subject's defect
@@ -88,7 +81,7 @@ def summary():
     points.sort(key=lambda p: p["v"])
     cheaper = sum(p["v"] < rent for p in points)
     # Headline market rate: median of the comparable agreed lets shown (same figure the page headline uses).
-    market_rate = round(statistics.median(p["v"] for p in points) / 10) * 10 if points else None
+    market_rate = round(statistics.median(r["price_loc"] for r in lets) / 10) * 10 if points else None
 
     return {
         "generated": datetime.now().strftime("%-d %b %Y"),
@@ -119,8 +112,12 @@ def render():
     import html as _h
     url = (oc.PUBLIC_SITE_URL or "").rstrip("/") + "/"
     title = "Rent Evidence: live rent vs market dashboard"
-    desc = (f"This example rent is £{d['gap']:,}/month above the market rate, measured against {len(d['points'])} "
-            f"comparable agreed lets. Open-source, updated daily.") if d.get("gap") else "A live, open-source rent evidence dashboard."
+    gap = d["gap"]
+    desc = "A live, open-source rent evidence dashboard."
+    if gap is not None:
+        comparison = (f"£{abs(gap):,} a month {'above' if gap > 0 else 'below'}"
+                      if gap else "in line with")
+        desc = f"This example rent is {comparison} the local median of {len(d['points'])} comparable agreed lets."
     page = TEMPLATE.replace("__URL__", _h.escape(url)).replace("__TITLE__", _h.escape(title)).replace("__DESC__", _h.escape(desc))
     return page.replace("/*__DATA__*/null", json.dumps(d).replace("</", "<\\/"))
 
@@ -152,26 +149,23 @@ TEMPLATE = r"""<!doctype html>
 <style>
 :root{
   color-scheme: light;
-  --page:#f6f6f3; --surface:#ffffff; --raised:#fbfbf9; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --page:#f6f6f3; --surface:#ffffff; --raised:#fbfbf9; --ink:#0b0b0b; --ink2:#52514e; --muted:#676965;
   --line:#e6e5df; --grid:#ecebe5; --axis:#c3c2b7;
-  --mkt:#2a78d6; --mkt-wash:rgba(42,120,214,.14); --you:#eb6834; --you-wash:rgba(235,104,52,.14); --ok:#1baf7a;
-  --seq1:#fde9df; --seq2:#f9c5ab; --seq3:#f29f76; --seq4:#eb6834; --seq5:#b8461c;
+  --mkt:#2a78d6; --mkt-wash:rgba(42,120,214,.14); --you:#ae4d2a; --you-wash:rgba(235,104,52,.14); --ok:#1baf7a;
   --glow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   color-scheme: dark;
   --page:#0b0c0e; --surface:#131417; --raised:#17191c; --ink:#f2f1ee; --ink2:#bdbcb6; --muted:#85847e;
   --line:#24262a; --grid:#1f2124; --axis:#34363a;
-  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#d95926; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
-  --seq1:#2a1c16; --seq2:#4d2a1b; --seq3:#7a3a1f; --seq4:#b04a22; --seq5:#e2652f;
+  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#f59870; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
   --glow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
   color-scheme: dark;
   --page:#0b0c0e; --surface:#131417; --raised:#17191c; --ink:#f2f1ee; --ink2:#bdbcb6; --muted:#85847e;
   --line:#24262a; --grid:#1f2124; --axis:#34363a;
-  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#d95926; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
-  --seq1:#2a1c16; --seq2:#4d2a1b; --seq3:#7a3a1f; --seq4:#b04a22; --seq5:#e2652f;
+  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#f59870; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
   --glow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
@@ -186,20 +180,23 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margi
 @media (prefers-reduced-motion: reduce){.dot{animation:none}}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(12,1fr)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--glow);min-width:0}
-.s12{grid-column:span 12}.s7{grid-column:span 7}.s5{grid-column:span 5}.s3{grid-column:span 3}
-@media (max-width:900px){.s7,.s5{grid-column:span 12}.s3{grid-column:span 6}}
-.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:center;padding:28px}
-@media (max-width:900px){.hero{grid-template-columns:1fr;padding:22px}}
-.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.big{font-size:clamp(52px,9vw,88px);font-weight:800;letter-spacing:-.045em;line-height:.95;margin:10px 0 6px;color:var(--you)}
-.big small{display:block;font-size:.3em;letter-spacing:-.01em;color:var(--ink2);font-weight:600;margin:10px 0 0}
-.lede{font-size:16px;color:var(--ink2);margin:6px 0 0}
-.lede b{color:var(--ink);font-weight:650}
-.kpi .v{font-size:34px;font-weight:750;letter-spacing:-.03em;line-height:1.05}
-.kpi .l{font-size:13px;color:var(--ink2);margin-top:4px}
-.kpi .t{font-size:12px;color:var(--muted);margin-top:8px}
-h2{font-size:15px;font-weight:650;margin:0;letter-spacing:-.005em}
-.cap{font-size:12.5px;color:var(--muted);margin:2px 0 12px}
+.s12{grid-column:span 12}.s7{grid-column:span 7}.s5{grid-column:span 5}
+@media (max-width:900px){.s7,.s5{grid-column:span 12}}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:32px;align-items:center;padding:32px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:650}
+h1{margin:14px 0 16px;font-size:clamp(22px,2.1vw,30px);line-height:1.15;letter-spacing:-.035em}
+#gap{display:block;font-size:clamp(56px,7vw,88px);color:var(--you);line-height:1;letter-spacing:-.06em}
+.lede{color:var(--ink2);font-size:15px;margin:0}.lede b{color:var(--ink)}
+.sample::before{content:" · "}
+@media (max-width:620px){.sample{display:block}.sample::before{content:none}}
+.proposal{font-size:13px;color:var(--ink2);margin:12px 0 0}
+.proposal::before{content:"";display:inline-block;width:15px;height:8px;border:1.5px dashed var(--you);border-radius:3px;margin-right:6px}
+.tracking{font-size:13px;color:var(--ink2);margin:0;padding:0 3px}
+h2{font-size:clamp(18px,2vw,23px);font-weight:650;line-height:1.25;letter-spacing:-.028em;margin:0}
+.cap{font-size:13px;color:var(--muted);margin:6px 0 14px}
+#share{color:var(--mkt);font-size:1.6em;letter-spacing:-.05em}
+@media (max-width:900px){.hero{grid-template-columns:1fr;gap:12px;padding:22px}}
+@media (max-width:520px){main{padding:16px 12px 36px}nav{margin-bottom:16px}.card{padding:16px;border-radius:14px}.hero{gap:8px}.grid{gap:12px}}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2);margin:0 0 6px}
 .key{display:inline-flex;align-items:center;gap:6px}.key i{display:inline-block;width:14px;height:3px;border-radius:2px}
 .key i.d{width:8px;height:8px;border-radius:50%}.key i.b{width:14px;height:10px;border-radius:3px}
@@ -211,11 +208,13 @@ svg .lbl,svg .strong{paint-order:stroke;stroke:var(--surface);stroke-width:4px;s
 .hit{fill:transparent;cursor:default}
 #tip{position:fixed;pointer-events:none;z-index:9;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;box-shadow:var(--glow);opacity:0;transition:opacity .08s;max-width:240px}
 #tip b{font-size:14px;display:block}
-.cells{display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;align-items:stretch}
-.cells .h{font-size:11.5px;color:var(--muted);text-align:center;align-self:end}
-.cells .r{font-size:11.5px;color:var(--muted);align-self:center;white-space:nowrap;padding-right:4px}
-.cell{border-radius:10px;padding:10px 6px;text-align:center;font-weight:650;font-size:15px;color:var(--ink)}
-.cell span{display:block;font-size:11px;font-weight:500;color:var(--ink2);margin-top:2px}
+.cells{width:100%;table-layout:fixed;border-spacing:4px;font-variant-numeric:tabular-nums}
+.cells th{font-size:12px;font-weight:550;color:var(--ink2);text-align:center}
+.cells th:first-child{width:48px;text-align:left;white-space:nowrap}
+.cells td{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:7px 2px;text-align:center;font-weight:650}
+.cells td span{display:block;font-size:11px;font-weight:450;color:var(--muted)}
+.cells .reference{border:2px solid var(--mkt);background:var(--mkt-wash)}
+.reference-note{font-size:12px;color:var(--ink2);margin:8px 4px 0}
 .steps{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
 .step{font-size:12.5px;border:1px solid var(--line);background:var(--raised);border-radius:999px;padding:6px 10px;color:var(--ink2)}
 .step b{color:var(--ink);font-weight:650;margin-right:4px}
@@ -238,27 +237,26 @@ footer a{color:var(--ink2)}
     <section class="card s12 hero" aria-label="Headline">
       <div>
         <div class="eyebrow">Example tenancy · <span id="area"></span></div>
-        <div class="big" id="gap"></div>
+        <h1><span id="gap"></span><span id="comparison"></span></h1>
         <p class="lede" id="lede"></p>
+        <p class="proposal" id="proposal" hidden></p>
       </div>
-      <div><div class="legend" id="lg-hero"></div><div id="c-hero"></div></div>
+      <div id="c-hero"></div>
     </section>
 
-    <section class="card s3 kpi"><div class="v" id="k1"></div><div class="l">live listings tracked</div><div class="t" id="k1t"></div></section>
-    <section class="card s3 kpi"><div class="v" id="k2"></div><div class="l">agreed lets analysed</div><div class="t" id="k2t"></div></section>
-    <section class="card s3 kpi"><div class="v" id="k3"></div><div class="l">of recent lets cheaper</div><div class="t">adjusted for location and date</div></section>
-    <section class="card s3 kpi"><div class="v" id="k4"></div><div class="l">views say above market</div><div class="t">every distance and period tested</div></section>
+    <p class="tracking s12" id="tracking"></p>
 
     <section class="card s7" aria-labelledby="h-dist">
-      <h2 id="h-dist">Where the market sits</h2>
-      <p class="cap">Agreed rents for comparable 2-beds, last 24 months, adjusted to this location and today.</p>
-      <div class="legend" id="lg-dist"></div><div id="c-dist"></div>
+      <h2 id="h-dist"><span id="share"></span><span id="share-label"></span></h2>
+      <p class="cap">Comparable two-bedroom lets from the last 24 months, adjusted for location and date.</p>
+      <div id="c-dist"></div>
     </section>
 
     <section class="card s5" aria-labelledby="h-sens">
-      <h2 id="h-sens">Above market, however you cut it</h2>
-      <p class="cap">Gap between this rent and the median agreed rent.</p>
-      <div class="cells" id="cells"></div>
+      <h2 id="h-sens">Rent by distance and period</h2>
+      <p class="cap">Monthly difference between this rent and each group’s median.</p>
+      <table class="cells" id="cells" aria-labelledby="h-sens"></table>
+      <p class="reference-note" id="reference-note" hidden></p>
     </section>
 
     <section class="card s12" aria-labelledby="h-trend">
@@ -307,22 +305,35 @@ function show(e, lines) { tip.innerHTML = ""; lines.forEach((l, i) => { const d 
 const hide = () => tip.style.opacity = 0;
 const fmtM = m => new Date(m + "-01").toLocaleDateString("en-GB", {month: "short", year: "numeric"});
 
-const P = D.points.map(p => p.v), MKT = Math.round(median(P) / 10) * 10, RENT = D.rent;
-const GAP = RENT - MKT, Q1 = quant(P, .25), Q3 = quant(P, .75);
+const P = D.points.map(p => p.v), MKT = D.marketRate, RENT = D.rent;
+const GAP = D.gap;
+const signedGap = gap => (gap > 0 ? "+" : gap < 0 ? "−" : "") + gbp(Math.abs(gap));
+const letCount = n => n + (n === 1 ? " let" : " lets");
 
 function header() {
   $("#gen").textContent = D.generated;
   $("#area").textContent = "SE13, south-east London";
-  $("#gap").innerHTML = ""; $("#gap").append((GAP >= 0 ? "+" : "−") + gbp(Math.abs(GAP)));
-  const s = document.createElement("small"); s.textContent = "/mo above market"; $("#gap").appendChild(s);
-  $("#lede").innerHTML = "";
-  const b1 = document.createElement("b"); b1.textContent = gbp(RENT);
-  const b2 = document.createElement("b"); b2.textContent = gbp(MKT);
-  $("#lede").append(b1, " current rent vs ", b2, " market rate" + (D.proposed ? `, with ${gbp(D.proposed[0])}–${gbp(D.proposed[1])} expected next.` : "."));
-  $("#k1").textContent = D.counts.live; $("#k1t").textContent = `within ${D.counts.radius} km, checked daily`;
-  $("#k2").textContent = D.counts.lets; $("#k2t").textContent = `${D.counts.recent} in the last 24 months`;
-  $("#k3").textContent = Math.round(D.points.filter(p => p.v < RENT).length / D.points.length * 100) + "%";
-  $("#k4").textContent = `${D.sens.above}/${D.sens.of}`;
+  $("#gap").textContent = GAP == null ? "" : gbp(Math.abs(GAP));
+  $("#comparison").textContent = GAP == null ? "Local rent comparison" : GAP === 0 ? "difference from the local median"
+    : ` a month ${GAP > 0 ? "above" : "below"} the local median`;
+  const current = document.createElement("b");
+  current.textContent = gbp(RENT);
+  $("#lede").replaceChildren("Current rent ", current);
+  if (P.length) {
+    const med = document.createElement("b");
+    med.textContent = gbp(MKT);
+    const sample = document.createElement("span");
+    sample.className = "sample";
+    sample.append(`Median of ${P.length} comparable agreed ${P.length === 1 ? "let" : "lets"} `, med);
+    $("#lede").append(" ", sample);
+  }
+  if (D.proposed) {
+    $("#proposal").hidden = false;
+    $("#proposal").textContent = `Expected proposal ${D.proposed.map(gbp).join("–")} a month`;
+  }
+  $("#tracking").textContent = `Within ${D.counts.radius} km · ${D.counts.live} live listings · ${D.counts.lets} agreed lets analysed`;
+  $("#share").textContent = P.length ? Math.round(100 * D.counts.cheaper / P.length) + "%" : "";
+  $("#share-label").textContent = P.length ? " of recent agreed lets were cheaper" : "No recent comparable agreed lets";
   const steps = [["Collect", "listings & agreed lets"], ["Enrich", "ONS, EPC, stations"], ["Clean", "no cherry-picking"], ["Adjust", "time, place, building"], ["Test", "12 ways"], ["Publish", "privacy-checked"]];
   const st = $("#steps"); st.innerHTML = ""; steps.forEach(([a, b], i) => { const d = document.createElement("span"); d.className = "step";
     const x = document.createElement("b"); x.textContent = `${i + 1}. ${a}`; d.append(x, b); st.appendChild(d); });
@@ -333,40 +344,43 @@ function header() {
 
 function heroBar() {
   const box = $("#c-hero"); box.innerHTML = "";
-  legend("#lg-hero", [["Market range (middle half)", css("--mkt-wash"), "b"], ["Market rate", css("--mkt")], ["This rent", css("--you")], ...(D.proposed ? [["Expected proposal", css("--you-wash"), "b"]] : [])]);
-  const W = Math.max(300, box.clientWidth), H = 150, m = {l: 8, r: 8};
-  const vals = [Q1, Q3, RENT, MKT, D.market.est, ...(D.proposed || [])];
-  const lo = Math.floor((Math.min(...vals) - 120) / 100) * 100, hi = Math.ceil((Math.max(...vals) + 60) / 100) * 100;
+  if (!P.length) return;
+  const Q1 = quant(P, .25), Q3 = quant(P, .75);
+  const W = Math.max(260, box.clientWidth), H = 138, m = {l: 22, r: 22};
+  const vals = [Q1, Q3, RENT, MKT, ...(D.proposed || [])];
+  const lo = Math.floor((Math.min(...vals) - 100) / 100) * 100, hi = Math.ceil((Math.max(...vals) + 100) / 100) * 100;
   const x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
-  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `This rent ${gbp(RENT)} against a market rate of ${gbp(MKT)}`}, box);
-  const y = 70, h = 26;
-  el("rect", {x: m.l, y, width: W - m.l - m.r, height: h, rx: 8, fill: "var(--grid)"}, svg);
-  el("rect", {x: x(Q1), y, width: x(Q3) - x(Q1), height: h, rx: 8, fill: "var(--mkt-wash)"}, svg);
-  if (D.proposed) el("rect", {x: x(D.proposed[0]), y, width: x(D.proposed[1]) - x(D.proposed[0]), height: h, rx: 8, fill: "var(--you-wash)"}, svg);
+  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label":
+    `Current rent ${gbp(RENT)}, local median ${gbp(MKT)}. Middle 50% of agreed rents ${gbp(Q1)} to ${gbp(Q3)}.`}, box);
+  const y = 42, h = 15;
+  el("rect", {x: m.l, y, width: W - m.l - m.r, height: h, rx: 4, fill: "var(--grid)"}, svg);
+  el("rect", {x: x(Q1), y, width: x(Q3) - x(Q1), height: h, rx: 4, fill: "var(--mkt-wash)"}, svg);
+  if (D.proposed) el("rect", {x: x(D.proposed[0]), y: y - 2, width: x(D.proposed[1]) - x(D.proposed[0]), height: h + 4,
+    rx: 4, fill: "var(--you-wash)", stroke: "var(--you)", "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   // gap bracket
-  el("rect", {x: x(MKT), y: y + h / 2 - 2, width: Math.max(0, x(RENT) - x(MKT)), height: 4, rx: 2, fill: "var(--you)", opacity: .55}, svg);
+  el("rect", {x: Math.min(x(MKT), x(RENT)), y: y + h / 2 - 2, width: Math.abs(x(RENT) - x(MKT)), height: 4, rx: 2, fill: "var(--you)", opacity: .55}, svg);
   const pin = (v, c, label, top) => { el("line", {x1: x(v), x2: x(v), y1: top ? y - 16 : y, y2: top ? y + h : y + h + 16, stroke: c, "stroke-width": 3, "stroke-linecap": "round"}, svg);
     el("circle", {cx: x(v), cy: y + h / 2, r: 7, fill: c, stroke: "var(--surface)", "stroke-width": 3}, svg);
-    tx(svg, x(v), top ? y - 24 : y + h + 32, label, "strong", "middle"); };
-  pin(MKT, "var(--mkt)", `Market ${gbp(MKT)}`, false);
-  pin(RENT, "var(--you)", `This rent ${gbp(RENT)}`, true);
-  el("line", {x1: x(D.market.est), x2: x(D.market.est), y1: y + 3, y2: y + h - 3, stroke: "var(--mkt)", "stroke-width": 2, "stroke-dasharray": "3 3"}, svg);
-  ticks(lo, hi, W < 520 ? 3 : 6).forEach(t => tx(svg, x(t), H - 4, gbp(t), null, "middle"));
-  const hit = el("rect", {x: x(D.market.est) - 8, y, width: 16, height: h, class: "hit"}, svg);
-  hit.addEventListener("pointermove", e => show(e, [gbp(D.market.est), "cautious estimate from the most similar flats", "(assumes they're smaller than this one)"]));
-  hit.addEventListener("pointerleave", hide);
+    tx(svg, Math.max(57, Math.min(W - 57, x(v))), top ? y - 24 : y + h + 29, label, "strong", "middle"); };
+  pin(MKT, "var(--mkt)", `Median ${gbp(MKT)}`, false);
+  pin(RENT, "var(--you)", `Current rent ${gbp(RENT)}`, true);
+  const bracketY = 96;
+  el("path", {d: `M${x(Q1)} ${bracketY - 4}v4H${x(Q3)}v-4`, fill: "none", stroke: "var(--mkt)"}, svg);
+  const centre = Math.max(78, Math.min(W - 78, (x(Q1) + x(Q3)) / 2));
+  tx(svg, centre, bracketY + 15, "Middle 50% of agreed rents", "lbl", "middle");
+  ticks(lo, hi, W < 520 ? 4 : 6).forEach(t => tx(svg, x(t), H - 2, gbp(t), null, "middle"));
 }
 
 function kde(vals, lo, hi, n = 120) {
   const sd = Math.sqrt(vals.reduce((s, v) => s + (v - median(vals)) ** 2, 0) / vals.length);
-  const iqr = quant(vals, .75) - quant(vals, .25), bw = 0.9 * Math.min(sd, iqr / 1.34) * Math.pow(vals.length, -0.2);
+  const iqr = quant(vals, .75) - quant(vals, .25), bw = Math.max(1, 0.9 * Math.min(sd, iqr / 1.34) * Math.pow(vals.length, -0.2));
   const out = []; for (let i = 0; i <= n; i++) { const x = lo + (hi - lo) * i / n;
     out.push([x, vals.reduce((s, v) => s + Math.exp(-0.5 * ((x - v) / bw) ** 2), 0) / (vals.length * bw * Math.sqrt(2 * Math.PI))]); }
   return out; }
 
 function dist() {
   const box = $("#c-dist"); box.innerHTML = "";
-  legend("#lg-dist", [["Agreed lets", css("--mkt"), "d"], ["Market rate", css("--mkt")], ["This rent", css("--you")]]);
+  if (!P.length) return;
   const W = Math.max(300, box.clientWidth), H = 250, m = {l: 8, r: 8, t: 30, b: 28};
   const lo = Math.floor((Math.min(...P, RENT) - 100) / 100) * 100, hi = Math.ceil((Math.max(...P, RENT) + 100) / 100) * 100;
   const x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
@@ -385,25 +399,61 @@ function dist() {
     h.addEventListener("pointerleave", hide); });
   const vline = (v, c, label, wgt, side) => { el("line", {x1: x(v), x2: x(v), y1: m.t - 6, y2: base, stroke: c, "stroke-width": wgt}, svg);
     tx(svg, x(v) + (side === "end" ? -6 : 6), m.t - 2, label, "strong", side); };
-  vline(MKT, "var(--mkt)", `Market ${gbp(MKT)}`, 2, RENT >= MKT ? "end" : "start");
+  vline(MKT, "var(--mkt)", `Median ${gbp(MKT)}`, 2, RENT >= MKT ? "end" : "start");
   vline(RENT, "var(--you)", `This rent ${gbp(RENT)}`, 3, RENT >= MKT ? "start" : "end");
   ticks(lo, hi, W < 520 ? 4 : 7).forEach(t => tx(svg, x(t), H - 4, gbp(t), null, "middle"));
 }
 
 function cells() {
-  const C = D.sens.cells.filter(c => c.n), host = $("#cells"); host.innerHTML = "";
+  const C = D.sens.cells;
+  const gaps = C.map(c => c.gap).filter(Number.isFinite);
+  const host = $("#cells");
+  host.replaceChildren();
+  const heading = $("#h-sens");
+  if (gaps.length) {
+    const low = Math.min(...gaps), high = Math.max(...gaps);
+    const group = gaps.length === C.length ? `all ${gaps.length} comparisons` : `${gaps.length} available comparisons`;
+    if (low > 0 || high < 0) {
+      const amounts = [Math.abs(low), Math.abs(high)].sort((a, b) => a - b);
+      const range = [...new Set(amounts)].map(gbp).join("–");
+      heading.textContent = `Rent was ${range} ${low > 0 ? "higher" : "lower"} across ${group}`;
+    } else {
+      heading.textContent = low === high ? "Rent matched every available median"
+        : `Rent gaps ranged from ${signedGap(low)} to ${signedGap(high)}`;
+    }
+  }
   const months = [...new Set(C.map(c => c.months))], kms = [...new Set(C.map(c => c.km))];
-  const gaps = C.map(c => c.gap), gmin = Math.min(...gaps), gmax = Math.max(...gaps);
-  const shade = g => `color-mix(in srgb, var(--you) ${Math.round(45 + 50 * Math.max(0, g) / Math.max(1, gmax))}%, var(--surface))`;
-  host.appendChild(document.createElement("span"));
-  months.forEach(mo => { const h = document.createElement("span"); h.className = "h"; h.textContent = `${mo} mo`; host.appendChild(h); });
-  kms.forEach(km => { const r = document.createElement("span"); r.className = "r"; r.textContent = `≤ ${km} km`; host.appendChild(r);
-    months.forEach(mo => { const c = C.find(z => z.km === km && z.months === mo); const d = document.createElement("div"); d.className = "cell";
-      if (!c) { d.textContent = "–"; host.appendChild(d); return; }
-      d.style.background = shade(c.gap); d.textContent = (c.gap >= 0 ? "+" : "−") + gbp(Math.abs(c.gap)).replace("£", "£");
-      const s = document.createElement("span"); s.textContent = `${c.n} lets`; d.appendChild(s);
-      d.addEventListener("pointermove", e => show(e, [`${gbp(c.median)} median`, `${c.n} agreed lets within ${km} km, last ${mo} months`, `this rent is ${gbp(c.gap)} above`]));
-      d.addEventListener("pointerleave", hide); host.appendChild(d); }); });
+  function addHeader(row, label, scope) {
+    const th = document.createElement("th");
+    th.scope = scope;
+    th.textContent = label;
+    row.appendChild(th);
+  }
+  const top = host.createTHead().insertRow();
+  addHeader(top, "Within", "col");
+  months.forEach(mo => addHeader(top, `${mo} mo`, "col"));
+  const body = host.createTBody();
+  kms.forEach(km => {
+    const row = body.insertRow();
+    addHeader(row, `${km} km`, "row");
+    months.forEach(mo => {
+      const c = C.find(cell => cell.km === km && cell.months === mo);
+      const td = row.insertCell();
+      if (!c || !c.n) { td.textContent = "–"; return; }
+      td.textContent = signedGap(c.gap);
+      const count = document.createElement("span");
+      count.textContent = letCount(c.n);
+      td.appendChild(count);
+      if (km === D.counts.radius && mo === 24) {
+        td.className = "reference";
+        const note = $("#reference-note");
+        note.hidden = false;
+        note.textContent = `Outlined group · The headline uses these ${letCount(c.n)} and rounds the median to the nearest £10.`;
+      }
+      td.addEventListener("pointermove", e => show(e, [`${gbp(c.median)} median`, `${letCount(c.n)} within ${km} km, last ${mo} months`]));
+      td.addEventListener("pointerleave", hide);
+    });
+  });
 }
 
 function trend() {

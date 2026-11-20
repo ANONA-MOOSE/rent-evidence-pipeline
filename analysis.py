@@ -181,14 +181,18 @@ def _boot_ci(vals, n=2000, seed=7):
     return round(meds[int(0.05 * n)]), round(meds[int(0.95 * n) - 1])
 
 
+def lets_in_window(lets, km, months):
+    return [r for r in lets if r["distance_km"] is not None and r["distance_km"] <= km
+            and _age(r["let_agreed_date"]) <= months]
+
+
 def sensitivity(rows, rent=None, field="price_loc", _inner=False):
     rent = rent or oc.RENT_HISTORY[-1][1]
     lets = [r for r in rows if not r["exclude_reason"] and r["status"] == "let_agreed" and r.get(field)]
     cells = []
     for km in (1.0, 2.0, 3.0, 4.0):
         for months in (12, 24, 36):
-            vals = [r[field] for r in lets
-                    if (r["distance_km"] or 99) <= km and _age(r["let_agreed_date"]) <= months]
+            vals = [r[field] for r in lets_in_window(lets, km, months)]
             if not vals:
                 cells.append({"km": km, "months": months, "n": 0})
                 continue
