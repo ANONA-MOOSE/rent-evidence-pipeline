@@ -267,7 +267,7 @@ html{scroll-behavior:smooth}
   background:rgba(12,14,16,.58);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);
   box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
 .jd-card svg{position:absolute;inset:0;width:100%;height:100%}
-.jd-cat{position:absolute;left:1%;top:-27%;width:50%;transform:rotate(-8deg);pointer-events:none;
+.jd-cat{position:absolute;left:1%;top:-22%;width:42%;transform:rotate(-8deg);pointer-events:none;
   filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 18px 28px rgba(0,0,0,.55))}
 .jd-down{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(244,243,239,.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
 .jd-down svg{animation:jdBob 2.2s ease-in-out infinite}
@@ -301,7 +301,7 @@ html{scroll-behavior:smooth}
       <p class="jd-tag">Using the force of the market, against itself.</p>
       <div class="jd-ctas"><a class="jd-pill" href="#evidence">See the evidence ↓</a></div>
     </div>
-    <div class="jd-art" aria-hidden="true">
+    <div class="jd-art">
       <div class="jd-card"><svg id="jd-chart" viewBox="0 0 400 400"></svg></div>
       <img class="jd-cat" src="logo-512.png" alt="">
     </div>
@@ -360,10 +360,11 @@ html{scroll-behavior:smooth}
       <p class="cap">An open-source pipeline runs every morning. Private evidence never leaves the tenant's computer.</p>
       <div class="steps" id="steps"></div>
       <a class="btn" id="repo" href="#" rel="noopener">View the code on GitHub →</a>
+      <p class="cap">Data from OpenRent, ONS (Open Government Licence), the GOV.UK EPC register and © OpenStreetMap contributors.</p>
     </section>
   </div>
 
-  <footer id="foot"></footer>
+  <footer>This example is based on a real case and uses real rental data. Rents and tribunal outcomes vary from case to case.</footer>
 </main>
 <div id="tip" role="status" aria-live="polite"></div>
 <script>
@@ -423,8 +424,6 @@ function header() {
   const st = $("#steps"); st.innerHTML = ""; steps.forEach(([a, b], i) => { const d = document.createElement("span"); d.className = "step";
     const x = document.createElement("b"); x.textContent = `${i + 1}. ${a}`; d.append(x, b); st.appendChild(d); });
   if (D.repo) $("#repo").href = D.repo; else $("#repo").style.display = "none";
-  $("#foot").innerHTML = "";
-  $("#foot").append(`Example: ${D.description}. Tenant's rents rounded to £${D.roundedTo}. Market rate = median of ${D.points.length} comparable agreed lets, adjusted to this neighbourhood (ONS small-area prices) and to today (ONS rent index); the cautious similar-flat estimate is ${gbp(D.market.est)}. Sources: OpenRent; ONS (Open Government Licence); GOV.UK EPC register; © OpenStreetMap contributors. Not legal advice. `);
 }
 
 function heroBar() {
@@ -600,15 +599,19 @@ function byKm() {
 
 function judo() {
   const gh = $("#jd-gh"); if (D.repo) gh.href = D.repo; else gh.remove();
-  // The card's chart, over time to the expected proposal: the market's middle half (blue band) and median (blue line),
-  // this rent (orange steps) above it with the gap shaded, then a red dashed step up to the proposal (red dot).
   const svg = $("#jd-chart"); svg.innerHTML = "";
   const S = 400, T = D.trend; if (!T.length || !D.history.length) return;
   const smooth = key => T.map((_, i) => { let a = 0, b = 0; T.forEach((v, j) => { const k = Math.exp(-(((i - j) / 3.5) ** 2) / 2) * v.n; a += k * v[key]; b += k; }); return a / b; });
   const md = smooth("med"), q1 = smooth("q1"), q3 = smooth("q3");
   const pm = D.proposed ? (D.proposed[0] + D.proposed[1]) / 2 : null;
+  const showTribunalRange = pm !== null && pm > D.rent;
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Rent history and comparable agreed rents over time." + (pm === null ? "" :
+    ` The expected landlord proposal is ${gbp(pm)} a month.`) + (showTribunalRange ?
+    " The proposal caps the tribunal rent, which can fall below the current rent." : ""));
   const t0 = +new Date(T[0].m + "-01"), t1 = Date.now(), tp = t1 + 120 * 864e5;     // proposal shown ~4 months on
-  const xL = S * .07, xP = S * .88, x = t => xL + (t - t0) / (tp - t0) * (xP - xL);
+  const xL = S * .07, xP = S * .79;
+  const x = t => xL + (t - t0) / (tp - t0) * (xP - xL);
   const vals = q1.concat(q3, D.history.map(h => h.rent), pm ? [pm] : []);
   const lo = Math.min(...vals), hi = Math.max(...vals), y = v => S * .84 - (v - lo) / (hi - lo) * S * .64;
   const rentAt = t => { let r = D.history[0].rent; D.history.forEach(h => { if (+new Date(h.from + "-01") <= t) r = h.rent; }); return r; };
@@ -633,14 +636,25 @@ function judo() {
   D.history.forEach(h => { const t = +new Date(h.from + "-01"); if (t > t0 && t < t1) r += `L${x(t)},${y(rentAt(t - 1))}L${x(t)},${y(h.rent)}`; });
   r += `L${x(t1)},${y(rentAt(t1))}`;
   el("path", {d: r, fill: "none", stroke: "#ff7d3b", "stroke-width": 4.5, filter: "url(#jdglow)", "stroke-linejoin": "round", "stroke-linecap": "round", pathLength: 1, class: "jd-draw"}, svg);
-  const lab = (x0, y0, t, c, a = "end") => { const e = tx(svg, x0, y0, t, "jd-lab", a); e.style.fill = c; e.setAttribute("font-size", 16); e.setAttribute("font-weight", 650); };
-  if (pm) {
+  const lab = (x0, y0, t, c) => { const e = tx(svg, x0, y0, t, "jd-lab", "end"); e.style.fill = c; e.style.fontSize = "13px"; e.style.fontWeight = 650; };
+  if (pm !== null) {
     el("path", {d: `M${x(t1)},${y(rentAt(t1))}L${xP},${y(rentAt(t1))}L${xP},${y(pm)}`, fill: "none", stroke: "#e66767", "stroke-width": 2.5, "stroke-dasharray": "3 5", class: "jd-late"}, svg);
     el("circle", {cx: xP, cy: y(pm), r: 9, fill: "none", stroke: "#e66767", "stroke-width": 2, class: "jd-pulse"}, svg);
     el("circle", {cx: xP, cy: y(pm), r: 9, fill: "#e66767", filter: "url(#jdglow)", class: "jd-late"}, svg);
-    lab(xP + 10, y(pm) - 20, "Proposal", "#f3a0a0");
+    lab(xP + 10, y(pm) - 20, "Expected proposal", "#f3a0a0");
   }
-  lab(x(t1) - 4, y(rentAt(t1)) - 14, "This rent", "#ffa070");
+  if (showTribunalRange) {
+    const bracketX = S * .93, currentY = y(D.rent), endY = Math.min(S * .89, currentY + 132);
+    const colour = "#d0b8ff";
+    const fade = el("linearGradient", {id: "jdTribunalFade", gradientUnits: "userSpaceOnUse", x1: 0, x2: 0, y1: currentY, y2: endY}, defs);
+    el("stop", {offset: 0, "stop-color": colour}, fade);
+    el("stop", {offset: 1, "stop-color": colour, "stop-opacity": 0}, fade);
+    el("path", {d: `M${xP + 12},${y(pm)}H${bracketX}V${endY}`, fill: "none", stroke: "url(#jdTribunalFade)", "stroke-width": 2, "stroke-linejoin": "round", class: "jd-late"}, svg);
+    el("line", {x1: bracketX - 5, x2: bracketX + 5, y1: currentY, y2: currentY, stroke: "#ffa070", "stroke-width": 2, class: "jd-late"}, svg);
+    const labelY = Math.min(currentY + 28, S * .77);
+    ["Tribunal can", "set rent below", "current rent"].forEach((text, i) => lab(bracketX - 12, labelY + i * 16, text, colour));
+  }
+  lab(x(t1) - 4, y(rentAt(t1)) - 14, "Current rent", "#ffa070");
   lab(x(ts[ts.length - 1]), y(q1[q1.length - 1]) + 26, "Market", "#8dbcf3");
 }
 
