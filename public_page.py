@@ -250,27 +250,37 @@ html{scroll-behavior:smooth}
 .jd-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:linear-gradient(90deg,rgba(10,12,10,.5) 0%,rgba(10,12,10,.18) 55%,rgba(10,12,10,.05) 100%),
              linear-gradient(180deg,rgba(0,0,0,.15) 0%,transparent 30%,transparent 70%,var(--page) 100%)}
-.jd-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px clamp(16px,3vw,40px)}
-.jd-brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;letter-spacing:-.01em;color:#fff;text-decoration:none;white-space:nowrap}
-.jd-brand img{width:36px;height:36px;border-radius:10px;display:block}
-.jd-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b0b0b;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:999px;white-space:nowrap}
-.jd-pill:focus-visible,.jd-brand:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.jd-nav{display:flex;align-items:center;justify-content:flex-end;gap:16px;padding:22px clamp(16px,3vw,40px)}
+.jd-gh{display:inline-flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 18px 10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);backdrop-filter:blur(8px);transition:background .2s}
+.jd-gh:hover{background:rgba(255,255,255,.18)}
+.jd-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b0b0b;text-decoration:none;font-weight:650;font-size:16px;padding:15px 28px;border-radius:999px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .2s}
+.jd-pill:hover{transform:translateY(-2px)}
+.jd-pill:focus-visible,.jd-gh:focus-visible,.jd-down:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .jd-body{flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:center;gap:clamp(24px,4vw,64px);
   padding:clamp(24px,6vh,72px) clamp(16px,3vw,40px) clamp(56px,10vh,110px);max-width:1360px;width:100%;margin:0 auto;box-sizing:border-box}
 .jd-title{font-weight:800;font-size:clamp(52px,8.4vw,128px);line-height:.92;letter-spacing:-.045em;margin:0;text-wrap:balance}
 .jd-title .o{color:#ff7d3b;display:block}
 .jd-tag{font-size:clamp(20px,2.2vw,30px);line-height:1.25;letter-spacing:-.02em;font-weight:500;color:rgba(244,243,239,.9);margin:22px 0 0;max-width:22ch}
 .jd-ctas{display:flex;margin-top:40px}
-.jd-card{position:relative;aspect-ratio:1/1;width:100%;max-width:520px;justify-self:end;border-radius:28px;
+.jd-art{position:relative;width:100%;max-width:520px;justify-self:end;margin-top:14%}
+.jd-card{position:relative;aspect-ratio:1/1;width:100%;border-radius:28px;
   background:rgba(12,14,16,.58);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);
   box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
 .jd-card svg{position:absolute;inset:0;width:100%;height:100%}
-.jd-cat{position:absolute;left:25%;top:52%;width:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 28px rgba(57,135,229,.45)) drop-shadow(0 12px 30px rgba(0,0,0,.5));
-  animation:jdFloat 7s ease-in-out infinite}
-@keyframes jdFloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-53%)}}
-@media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-card{justify-self:start;max-width:420px}}
-@media (max-width:520px){.jd-card{max-width:none}}
-@media (prefers-reduced-motion: reduce){.jd-bg,.jd-cat{animation:none}}
+.jd-cat{position:absolute;left:1%;top:-27%;width:50%;transform:rotate(-8deg);pointer-events:none;
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 18px 28px rgba(0,0,0,.55))}
+.jd-down{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(244,243,239,.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.jd-down svg{animation:jdBob 2.2s ease-in-out infinite}
+@keyframes jdBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.jd-draw{stroke-dasharray:1;stroke-dashoffset:1;animation:jdDraw 1.6s .2s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes jdDraw{to{stroke-dashoffset:0}}
+.jd-fade,.jd-late,.jd-lab{opacity:0;animation:jdIn .8s forwards}.jd-fade{animation-delay:.5s}.jd-late,.jd-lab{animation-delay:1.6s}
+@keyframes jdIn{to{opacity:1}}
+.jd-pulse{transform-box:fill-box;transform-origin:center;opacity:0;animation:jdPulse 2.4s 2.2s ease-out infinite}
+@keyframes jdPulse{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+@media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-art{justify-self:center;max-width:440px;margin-top:20%}}
+@media (max-width:520px){.jd-art{max-width:none;margin-top:26%}.jd-cat{left:2%;top:-24%;width:46%}.jd-gh span{display:none}.jd-gh{padding:10px}.jd-down{display:none}}
+@media (prefers-reduced-motion: reduce){.jd-bg,.jd-down svg,.jd-pulse{animation:none}.jd-draw,.jd-fade,.jd-late,.jd-lab{animation:none;opacity:1;stroke-dashoffset:0}}
 .dash-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px;scroll-margin-top:16px}
 .dash-head h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.035em}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -283,7 +293,7 @@ html{scroll-behavior:smooth}
 <header class="jd" aria-label="Rent Control JUDO">
   <div class="jd-bg" aria-hidden="true"></div><div class="jd-mesh" aria-hidden="true"></div><div class="jd-shade" aria-hidden="true"></div>
   <nav class="jd-nav">
-    <a class="jd-brand" href="#top" id="top"><img src="logo-64.png" width="36" height="36" alt="">Rent Control JUDO</a>
+    <a class="jd-gh" id="jd-gh" href="#" aria-label="View the code on GitHub"><svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg><span>GitHub</span></a>
   </nav>
   <div class="jd-body">
     <div>
@@ -291,11 +301,13 @@ html{scroll-behavior:smooth}
       <p class="jd-tag">Using the force of the market, against itself.</p>
       <div class="jd-ctas"><a class="jd-pill" href="#evidence">See the evidence ↓</a></div>
     </div>
-    <div class="jd-card" aria-hidden="true">
-      <svg id="jd-chart" viewBox="0 0 400 400"></svg>
+    <div class="jd-art" aria-hidden="true">
+      <div class="jd-card"><svg id="jd-chart" viewBox="0 0 400 400"></svg></div>
       <img class="jd-cat" src="logo-512.png" alt="">
     </div>
   </div>
+  <a class="jd-down" href="#evidence" aria-label="Scroll to the evidence"><span>Scroll</span>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
 </header>
 <main>
   <div class="dash-head" id="evidence">
@@ -587,42 +599,49 @@ function byKm() {
 }
 
 function judo() {
-  // The card's chart, over time: market (blue) and this rent (orange), the gap between them shaded,
-  // and a red dashed step up to the expected proposal: a red dot at the top right.
+  const gh = $("#jd-gh"); if (D.repo) gh.href = D.repo; else gh.remove();
+  // The card's chart, over time to the expected proposal: the market's middle half (blue band) and median (blue line),
+  // this rent (orange steps) above it with the gap shaded, then a red dashed step up to the proposal (red dot).
   const svg = $("#jd-chart"); svg.innerHTML = "";
   const S = 400, T = D.trend; if (!T.length || !D.history.length) return;
-  const sm = T.map((_, i) => { let a = 0, b = 0; T.forEach((v, j) => { const k = Math.exp(-(((i - j) / 4) ** 2) / 2) * v.n; a += k * v.med; b += k; }); return a / b; });   // Gaussian smooth, weighted by lets
+  const smooth = key => T.map((_, i) => { let a = 0, b = 0; T.forEach((v, j) => { const k = Math.exp(-(((i - j) / 3.5) ** 2) / 2) * v.n; a += k * v[key]; b += k; }); return a / b; });
+  const md = smooth("med"), q1 = smooth("q1"), q3 = smooth("q3");
   const pm = D.proposed ? (D.proposed[0] + D.proposed[1]) / 2 : null;
-  const t0 = +new Date(T[0].m + "-15"), t1 = Date.now();
-  const xL = S * .26, xR = S * .80, xP = S * .91;
-  const x = t => xL + (t - t0) / (t1 - t0) * (xR - xL);
-  const vals = sm.concat(D.history.map(h => h.rent), pm ? [pm] : []);
-  const lo = Math.min(...vals) - 40, hi = Math.max(...vals) + 40, y = v => S * .82 - (v - lo) / (hi - lo) * S * .62;
+  const t0 = +new Date(T[0].m + "-01"), t1 = Date.now(), tp = t1 + 120 * 864e5;     // proposal shown ~4 months on
+  const xL = S * .07, xP = S * .88, x = t => xL + (t - t0) / (tp - t0) * (xP - xL);
+  const vals = q1.concat(q3, D.history.map(h => h.rent), pm ? [pm] : []);
+  const lo = Math.min(...vals), hi = Math.max(...vals), y = v => S * .84 - (v - lo) / (hi - lo) * S * .64;
   const rentAt = t => { let r = D.history[0].rent; D.history.forEach(h => { if (+new Date(h.from + "-01") <= t) r = h.rent; }); return r; };
   const defs = el("defs", {}, svg), f = el("filter", {id: "jdglow", filterUnits: "userSpaceOnUse", x: 0, y: 0, width: S, height: S}, defs);
-  el("feGaussianBlur", {stdDeviation: 6, result: "b"}, f); const mg = el("feMerge", {}, f); el("feMergeNode", {in: "b"}, mg); el("feMergeNode", {in: "SourceGraphic"}, mg);
-  const fade = (id, c, a1) => { const g = el("linearGradient", {id, gradientUnits: "userSpaceOnUse", x1: S * .2, x2: S * .5, y1: 0, y2: 0}, defs);
-    el("stop", {offset: 0, "stop-color": c, "stop-opacity": 0}, g); el("stop", {offset: 1, "stop-color": c, "stop-opacity": a1}, g); };
-  fade("jdB", "#3987e5", 1); fade("jdO", "#ff7d3b", 1); fade("jdW", "#ff7d3b", .16);
-  for (let i = 1; i < 6; i++) { el("line", {x1: S * i / 6, x2: S * i / 6, y1: 0, y2: S, stroke: "rgba(255,255,255,.07)"}, svg);
-    el("line", {x1: 0, x2: S, y1: S * i / 6, y2: S * i / 6, stroke: "rgba(255,255,255,.07)"}, svg); }
-  const ts = T.map(t => +new Date(t.m + "-15"));
-  const mp = ts.map((t, i) => [x(t), y(sm[i])]);
-  const d = mp.map((p, i) => (i ? "L" : "M") + p).join("");
+  el("feGaussianBlur", {stdDeviation: 5, result: "b"}, f); const mg = el("feMerge", {}, f); el("feMergeNode", {in: "b"}, mg); el("feMergeNode", {in: "SourceGraphic"}, mg);
+  const vg = el("linearGradient", {id: "jdBand", x1: 0, x2: 0, y1: 0, y2: 1}, defs);
+  el("stop", {offset: 0, "stop-color": "#3987e5", "stop-opacity": .32}, vg); el("stop", {offset: 1, "stop-color": "#3987e5", "stop-opacity": .08}, vg);
+  // faint horizontal grid and year ticks
+  for (let i = 1; i < 5; i++) el("line", {x1: 0, x2: S, y1: S * i / 5, y2: S * i / 5, stroke: "rgba(255,255,255,.06)"}, svg);
+  const year = (t, s, a) => { const e = tx(svg, x(t), S - 14, s, null, a); e.style.fill = "rgba(244,243,239,.45)"; e.setAttribute("font-size", 13); };
+  // a faint line at each 1 January; each year's label centred in its own span
+  for (let yr = new Date(t0).getFullYear(); yr <= new Date(tp).getFullYear(); yr++) {
+    const a = Math.max(t0, +new Date(yr, 0, 1)), b = Math.min(tp, +new Date(yr + 1, 0, 1));
+    if (a > t0) el("line", {x1: x(a), x2: x(a), y1: S * .1, y2: S - 34, stroke: "rgba(255,255,255,.07)"}, svg);
+    if (x(b) - x(a) > 34) year((a + b) / 2, String(yr), "middle"); }
+  const ts = T.map(t => +new Date(t.m + "-15")), P = arr => ts.map((t, i) => [x(t), y(arr[i])]);
+  const line = pts => pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join("");
+  el("path", {d: line(P(q3)) + line(P(q1).reverse()).replace("M", "L") + "Z", fill: "url(#jdBand)", class: "jd-fade"}, svg);
+  el("path", {d: line(ts.map(t => [x(t), y(rentAt(t))])) + line(P(md).reverse()).replace("M", "L") + "Z", fill: "#ff7d3b", "fill-opacity": .14, class: "jd-fade"}, svg);
+  el("path", {d: line(P(md)), fill: "none", stroke: "#3987e5", "stroke-width": 4.5, filter: "url(#jdglow)", "stroke-linecap": "round", "stroke-linejoin": "round", pathLength: 1, class: "jd-draw"}, svg);
   let r = `M${x(t0)},${y(rentAt(t0))}`;
   D.history.forEach(h => { const t = +new Date(h.from + "-01"); if (t > t0 && t < t1) r += `L${x(t)},${y(rentAt(t - 1))}L${x(t)},${y(h.rent)}`; });
-  r += `L${xR},${y(rentAt(t1))}`;
-  el("path", {d: ts.map((t, i) => (i ? "L" : "M") + x(t) + "," + y(rentAt(t))).join("") + ts.map((t, i) => "L" + x(t) + "," + y(sm[i])).reverse().join("") + "Z", fill: "url(#jdW)"}, svg);
-  el("path", {d, fill: "none", stroke: "url(#jdB)", "stroke-width": 5, filter: "url(#jdglow)", "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
-  el("path", {d: r, fill: "none", stroke: "url(#jdO)", "stroke-width": 5, filter: "url(#jdglow)", "stroke-linejoin": "round"}, svg);
-  const lab = (x0, y0, t, c) => { const e = tx(svg, x0, y0, t, null, "end"); e.style.fill = c; e.setAttribute("font-size", 17); e.setAttribute("font-weight", 600); };
+  r += `L${x(t1)},${y(rentAt(t1))}`;
+  el("path", {d: r, fill: "none", stroke: "#ff7d3b", "stroke-width": 4.5, filter: "url(#jdglow)", "stroke-linejoin": "round", "stroke-linecap": "round", pathLength: 1, class: "jd-draw"}, svg);
+  const lab = (x0, y0, t, c, a = "end") => { const e = tx(svg, x0, y0, t, "jd-lab", a); e.style.fill = c; e.setAttribute("font-size", 16); e.setAttribute("font-weight", 650); };
   if (pm) {
-    el("path", {d: `M${xR},${y(rentAt(t1))}L${xP},${y(rentAt(t1))}L${xP},${y(pm)}`, fill: "none", stroke: "#e66767", "stroke-width": 2, "stroke-dasharray": "3 5"}, svg);
-    el("circle", {cx: xP, cy: y(pm), r: 10, fill: "#e66767", filter: "url(#jdglow)"}, svg);
-    lab(xP + 10, y(pm) - 22, "Proposal", "#f09090");
+    el("path", {d: `M${x(t1)},${y(rentAt(t1))}L${xP},${y(rentAt(t1))}L${xP},${y(pm)}`, fill: "none", stroke: "#e66767", "stroke-width": 2.5, "stroke-dasharray": "3 5", class: "jd-late"}, svg);
+    el("circle", {cx: xP, cy: y(pm), r: 9, fill: "none", stroke: "#e66767", "stroke-width": 2, class: "jd-pulse"}, svg);
+    el("circle", {cx: xP, cy: y(pm), r: 9, fill: "#e66767", filter: "url(#jdglow)", class: "jd-late"}, svg);
+    lab(xP + 10, y(pm) - 20, "Proposal", "#f3a0a0");
   }
-  lab(xR, y(rentAt(t1)) - 14, "This rent", "#ffa070");
-  lab(xR, y(sm[sm.length - 1]) + 30, "Market", "#7fb2f0");
+  lab(x(t1) - 4, y(rentAt(t1)) - 14, "This rent", "#ffa070");
+  lab(x(ts[ts.length - 1]), y(q1[q1.length - 1]) + 26, "Market", "#8dbcf3");
 }
 
 function reveals() {
