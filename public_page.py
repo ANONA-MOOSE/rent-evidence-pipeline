@@ -87,6 +87,8 @@ def summary():
               for r in lets]
     points.sort(key=lambda p: p["v"])
     cheaper = sum(p["v"] < rent for p in points)
+    # Headline market rate: median of the comparable agreed lets shown (same figure the page headline uses).
+    market_rate = round(statistics.median(p["v"] for p in points) / 10) * 10 if points else None
 
     return {
         "generated": datetime.now().strftime("%-d %b %Y"),
@@ -95,7 +97,7 @@ def summary():
         "rent": rent, "history": hist,
         "proposed": list(oc.PROPOSED_RENT_RANGE) if oc.PROPOSED_RENT_RANGE else None,
         "market": {"est": est, "low": low, "high": high},
-        "gap": rent - est if est else None,
+        "gap": rent - market_rate if market_rate else None, "marketRate": market_rate,
         "counts": {"tracked": len(rows), "live": len(live), "lets": len(lets_all), "recent": len(lets),
                    "cheaper": cheaper, "radius": oc.RADIUS_KM},
         "points": points, "trend": by_month, "ons": ons,
@@ -114,7 +116,13 @@ if __name__ == "__main__":
 def render():
     import json
     d = summary()
-    return TEMPLATE.replace("/*__DATA__*/null", json.dumps(d).replace("</", "<\\/"))
+    import html as _h
+    url = (oc.PUBLIC_SITE_URL or "").rstrip("/") + "/"
+    title = "Rent Evidence: live rent vs market dashboard"
+    desc = (f"This example rent is £{d['gap']:,}/month above the market rate, measured against {len(d['points'])} "
+            f"comparable agreed lets. Open-source, updated daily.") if d.get("gap") else "A live, open-source rent evidence dashboard."
+    page = TEMPLATE.replace("__URL__", _h.escape(url)).replace("__TITLE__", _h.escape(title)).replace("__DESC__", _h.escape(desc))
+    return page.replace("/*__DATA__*/null", json.dumps(d).replace("</", "<\\/"))
 
 
 TEMPLATE = r"""<!doctype html>
@@ -123,7 +131,22 @@ TEMPLATE = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rent evidence demo</title>
-<meta name="description" content="A live, open-source evidence pipeline for challenging a rent increase.">
+<meta name="description" content="__DESC__">
+<meta name="theme-color" content="#0b0c0e">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rent Evidence">
+<meta property="og:title" content="__TITLE__">
+<meta property="og:description" content="__DESC__">
+<meta property="og:url" content="__URL__">
+<meta property="og:image" content="__URL__og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rent Evidence: a cat logo and the words 'Live dashboard: a real rent versus the market, updated daily'">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="__URL__og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -156,7 +179,7 @@ body{margin:0;background:var(--page);color:var(--ink);font:15px/1.45 Inter,syste
 main{max-width:1180px;margin:0 auto;padding:20px 16px 56px}
 nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em}
-.mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--mkt),var(--you));display:inline-block}
+.mark{width:30px;height:30px;border-radius:8px;display:block;box-shadow:0 0 0 1px var(--line)}
 .live{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);border:1px solid var(--line);background:var(--surface);padding:6px 10px;border-radius:999px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:pulse 2.4s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(27,175,122,.55)}70%{box-shadow:0 0 0 8px rgba(27,175,122,0)}100%{box-shadow:0 0 0 0 rgba(27,175,122,0)}}
@@ -169,7 +192,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margi
 @media (max-width:900px){.hero{grid-template-columns:1fr;padding:22px}}
 .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .big{font-size:clamp(52px,9vw,88px);font-weight:800;letter-spacing:-.045em;line-height:.95;margin:10px 0 6px;color:var(--you)}
-.big small{font-size:.32em;letter-spacing:-.01em;color:var(--ink2);font-weight:600;margin-left:4px}
+.big small{display:block;font-size:.3em;letter-spacing:-.01em;color:var(--ink2);font-weight:600;margin:10px 0 0}
 .lede{font-size:16px;color:var(--ink2);margin:6px 0 0}
 .lede b{color:var(--ink);font-weight:650}
 .kpi .v{font-size:34px;font-weight:750;letter-spacing:-.03em;line-height:1.05}
@@ -199,7 +222,7 @@ svg .lbl,svg .strong{paint-order:stroke;stroke:var(--surface);stroke-width:4px;s
 .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:13.5px;color:var(--surface);background:var(--ink);padding:10px 14px;border-radius:10px}
 .btn:focus-visible{outline:2px solid var(--mkt);outline-offset:2px}
 .brand,.live{white-space:nowrap}
-@media (max-width:520px){.big small{display:block;margin:8px 0 0;font-size:.3em}.live .long{display:none}}
+@media (max-width:520px){.live .long{display:none}}
 footer{margin-top:22px;font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--ink2)}
 </style>
@@ -207,7 +230,7 @@ footer a{color:var(--ink2)}
 <body>
 <main>
   <nav>
-    <div class="brand"><span class="mark" aria-hidden="true"></span>Rent Evidence</div>
+    <div class="brand"><img class="mark" src="logo-64.png" width="30" height="30" alt="">Rent Evidence</div>
     <div class="live"><span class="dot" aria-hidden="true"></span>Live<span class="long"> · updated</span>&nbsp;<span id="gen"></span></div>
   </nav>
 
@@ -263,6 +286,7 @@ footer a{color:var(--ink2)}
 <div id="tip" role="status" aria-live="polite"></div>
 <script>
 const D = /*__DATA__*/null;
+(() => { const t = new URLSearchParams(location.search).get("theme"); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; })();
 const $ = s => document.querySelector(s);
 const gbp = v => v == null ? "–" : "£" + Math.round(v).toLocaleString("en-GB");
 const NS = "http://www.w3.org/2000/svg";

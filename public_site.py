@@ -115,6 +115,11 @@ def build():
         return None, problems
     with open(path, "w", encoding="utf-8") as f:
         f.write(html)
+    import shutil
+    brand = os.path.join(HERE, "docs", "brand")
+    for name in ("favicon-32.png", "icon-192.png", "apple-touch-icon.png", "logo-64.png", "og.png"):
+        if os.path.exists(os.path.join(brand, name)):
+            shutil.copyfile(os.path.join(brand, name), os.path.join(OUT_DIR, name))
     with open(os.path.join(OUT_DIR, "_headers"), "w") as f:
         f.write("/*\n  Cache-Control: public, max-age=300\n  Referrer-Policy: no-referrer\n  X-Content-Type-Options: nosniff\n")
     return path, []

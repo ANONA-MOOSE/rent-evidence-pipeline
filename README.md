@@ -1,6 +1,16 @@
-# Rent evidence pipeline
+<p align="center">
+  <img src="docs/brand/icon-192.png" width="96" height="96" alt="Rent Evidence logo: a black-and-white cat">
+</p>
 
-**Gather your own evidence to challenge a rent increase at the First-tier Tribunal: automatically, every day.**
+<h1 align="center">Rent Evidence</h1>
+
+<p align="center"><b>Gather your own evidence to challenge a rent increase at the First-tier Tribunal: automatically, every day.</b></p>
+
+<p align="center"><a href="https://rent-evidence-demo.pages.dev"><b>Live demo →</b></a></p>
+
+<p align="center">
+  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/dashboard-dark.jpg" width="820" alt="Public dashboard: a rent £210 a month above the market rate, with key figures and charts"></a>
+</p>
 
 Since 1 May 2026 (the Renters' Rights Act 2025), a private landlord in England can only raise the rent with a
 Section 13 notice (Form 4A), and the tenant can ask the First-tier Tribunal (Property Chamber) to decide the
@@ -11,7 +21,25 @@ are comparable, adjusted openly, and dated proof of the flat's condition.
 This project builds that evidence for one flat, keeps it up to date every morning, and publishes an anonymised
 copy so others can see how it works.
 
-**Live demo:** [rent-evidence-demo.pages.dev](https://rent-evidence-demo.pages.dev) · a worked example for a two-bed flat in south-east London.
+**Live demo:** [rent-evidence-demo.pages.dev](https://rent-evidence-demo.pages.dev) · a worked example for a two-bed flat in south-east London, rebuilt every morning.
+
+## The public dashboard
+
+One number up front (how far the rent sits above the market), four headline figures, and four charts:
+where the market sits, a robustness grid (every distance and period), agreed rents over time against the
+official ONS average, and every comparable let by distance. Hover anything for the figures behind it.
+It follows the viewer's light or dark setting and works on a phone.
+
+<p align="center">
+  <img src="docs/screenshots/charts-light.jpg" width="560" alt="Light mode: agreed rents over time, and agreed rents by distance with the example rent marked">
+  &nbsp;
+  <img src="docs/screenshots/mobile-dark.jpg" width="230" alt="Phone view in dark mode">
+</p>
+
+The full working (evidence log, every adjustment line by line, tribunal decisions, a spreadsheet laid out for the
+tribunal forms) stays in a private dashboard on the tenant's own computer.
+
+## How it works
 
 ![How the daily pipeline works](docs/pipeline.svg)
 
