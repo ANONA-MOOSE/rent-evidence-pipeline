@@ -151,21 +151,21 @@ TEMPLATE = r"""<!doctype html>
   color-scheme: light;
   --page:#f6f6f3; --surface:#ffffff; --raised:#fbfbf9; --ink:#0b0b0b; --ink2:#52514e; --muted:#676965;
   --line:#e6e5df; --grid:#ecebe5; --axis:#c3c2b7;
-  --mkt:#2a78d6; --mkt-wash:rgba(42,120,214,.14); --you:#ae4d2a; --you-wash:rgba(235,104,52,.14); --ok:#1baf7a;
+  --mkt:#2a78d6; --mkt-wash:rgba(42,120,214,.14); --you:#eb6834; --you-wash:rgba(235,104,52,.14); --tile:#c4552a; --prop:#d03b3b; --ok:#1baf7a;
   --glow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   color-scheme: dark;
   --page:#0b0c0e; --surface:#131417; --raised:#17191c; --ink:#f2f1ee; --ink2:#bdbcb6; --muted:#85847e;
   --line:#24262a; --grid:#1f2124; --axis:#34363a;
-  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#f59870; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
+  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#e2652f; --you-wash:rgba(217,89,38,.2); --tile:#cf5a26; --prop:#e66767; --ok:#199e70;
   --glow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
   color-scheme: dark;
   --page:#0b0c0e; --surface:#131417; --raised:#17191c; --ink:#f2f1ee; --ink2:#bdbcb6; --muted:#85847e;
   --line:#24262a; --grid:#1f2124; --axis:#34363a;
-  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#f59870; --you-wash:rgba(217,89,38,.2); --ok:#199e70;
+  --mkt:#3987e5; --mkt-wash:rgba(57,135,229,.18); --you:#e2652f; --you-wash:rgba(217,89,38,.2); --tile:#cf5a26; --prop:#e66767; --ok:#199e70;
   --glow: 0 1px 0 rgba(255,255,255,.03) inset, 0 12px 32px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
@@ -190,8 +190,12 @@ h1{margin:14px 0 16px;font-size:clamp(22px,2.1vw,30px);line-height:1.15;letter-s
 .sample::before{content:" · "}
 @media (max-width:620px){.sample{display:block}.sample::before{content:none}}
 .proposal{font-size:13px;color:var(--ink2);margin:12px 0 0}
-.proposal::before{content:"";display:inline-block;width:15px;height:8px;border:1.5px dashed var(--you);border-radius:3px;margin-right:6px}
-.tracking{font-size:13px;color:var(--ink2);margin:0;padding:0 3px}
+.proposal::before{content:"";display:inline-block;width:10px;height:10px;background:var(--prop);border-radius:50%;margin-right:7px;vertical-align:-1px}
+.s4{grid-column:span 4}
+@media (max-width:620px){.kpi{flex-direction:column;align-items:flex-start;gap:6px;padding:14px 12px}.kpi .v{font-size:28px}.kpi .l{font-size:12px}}
+.kpi{display:flex;align-items:baseline;gap:12px;padding:18px 20px}
+.kpi .v{font-size:clamp(30px,3.4vw,40px);font-weight:750;letter-spacing:-.04em;line-height:1}
+.kpi .l{font-size:13.5px;color:var(--ink2);line-height:1.3}.kpi .l b{display:block;color:var(--ink);font-weight:600}
 h2{font-size:clamp(18px,2vw,23px);font-weight:650;line-height:1.25;letter-spacing:-.028em;margin:0}
 .cap{font-size:13px;color:var(--muted);margin:6px 0 14px}
 #share{color:var(--mkt);font-size:1.6em;letter-spacing:-.05em}
@@ -211,9 +215,10 @@ svg .lbl,svg .strong{paint-order:stroke;stroke:var(--surface);stroke-width:4px;s
 .cells{width:100%;table-layout:fixed;border-spacing:4px;font-variant-numeric:tabular-nums}
 .cells th{font-size:12px;font-weight:550;color:var(--ink2);text-align:center}
 .cells th:first-child{width:48px;text-align:left;white-space:nowrap}
-.cells td{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:7px 2px;text-align:center;font-weight:650}
-.cells td span{display:block;font-size:11px;font-weight:450;color:var(--muted)}
-.cells .reference{border:2px solid var(--mkt);background:var(--mkt-wash)}
+.cells td{border-radius:10px;padding:10px 2px;text-align:center;font-weight:700;font-size:16px;color:#fff;letter-spacing:-.01em}
+.cells td span{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.82);margin-top:1px}
+.cells td.empty{background:var(--raised);color:var(--muted)}
+.cells .reference{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--mkt)}
 .reference-note{font-size:12px;color:var(--ink2);margin:8px 4px 0}
 .steps{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
 .step{font-size:12.5px;border:1px solid var(--line);background:var(--raised);border-radius:999px;padding:6px 10px;color:var(--ink2)}
@@ -244,7 +249,9 @@ footer a{color:var(--ink2)}
       <div id="c-hero"></div>
     </section>
 
-    <p class="tracking s12" id="tracking"></p>
+    <section class="card s4 kpi"><div class="v" id="k1"></div><div class="l"><b>live listings</b>tracked daily within <span id="k1r"></span> km</div></section>
+    <section class="card s4 kpi"><div class="v" id="k2"></div><div class="l"><b>agreed lets</b>analysed in total</div></section>
+    <section class="card s4 kpi"><div class="v" id="k3"></div><div class="l"><b>recent comparables</b>let in the last 24 months</div></section>
 
     <section class="card s7" aria-labelledby="h-dist">
       <h2 id="h-dist"><span id="share"></span><span id="share-label"></span></h2>
@@ -253,8 +260,8 @@ footer a{color:var(--ink2)}
     </section>
 
     <section class="card s5" aria-labelledby="h-sens">
-      <h2 id="h-sens">Rent by distance and period</h2>
-      <p class="cap">Monthly difference between this rent and each group’s median.</p>
+      <h2 id="h-sens">Above the median in every view</h2>
+      <p class="cap">£ a month above the median, by distance and period.</p>
       <table class="cells" id="cells" aria-labelledby="h-sens"></table>
       <p class="reference-note" id="reference-note" hidden></p>
     </section>
@@ -331,7 +338,8 @@ function header() {
     $("#proposal").hidden = false;
     $("#proposal").textContent = `Expected proposal ${D.proposed.map(gbp).join("–")} a month`;
   }
-  $("#tracking").textContent = `Within ${D.counts.radius} km · ${D.counts.live} live listings · ${D.counts.lets} agreed lets analysed`;
+  $("#k1").textContent = D.counts.live; $("#k1r").textContent = D.counts.radius;
+  $("#k2").textContent = D.counts.lets; $("#k3").textContent = P.length;
   $("#share").textContent = P.length ? Math.round(100 * D.counts.cheaper / P.length) + "%" : "";
   $("#share-label").textContent = P.length ? " of recent agreed lets were cheaper" : "No recent comparable agreed lets";
   const steps = [["Collect", "listings & agreed lets"], ["Enrich", "ONS, EPC, stations"], ["Clean", "no cherry-picking"], ["Adjust", "time, place, building"], ["Test", "12 ways"], ["Publish", "privacy-checked"]];
@@ -346,25 +354,28 @@ function heroBar() {
   const box = $("#c-hero"); box.innerHTML = "";
   if (!P.length) return;
   const Q1 = quant(P, .25), Q3 = quant(P, .75);
-  const W = Math.max(260, box.clientWidth), H = 138, m = {l: 22, r: 22};
+  const W = Math.max(260, box.clientWidth), H = 158, m = {l: 22, r: 22};
   const vals = [Q1, Q3, RENT, MKT, ...(D.proposed || [])];
   const lo = Math.floor((Math.min(...vals) - 100) / 100) * 100, hi = Math.ceil((Math.max(...vals) + 100) / 100) * 100;
   const x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
   const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label":
     `Current rent ${gbp(RENT)}, local median ${gbp(MKT)}. Middle 50% of agreed rents ${gbp(Q1)} to ${gbp(Q3)}.`}, box);
-  const y = 42, h = 15;
-  el("rect", {x: m.l, y, width: W - m.l - m.r, height: h, rx: 4, fill: "var(--grid)"}, svg);
-  el("rect", {x: x(Q1), y, width: x(Q3) - x(Q1), height: h, rx: 4, fill: "var(--mkt-wash)"}, svg);
-  if (D.proposed) el("rect", {x: x(D.proposed[0]), y: y - 2, width: x(D.proposed[1]) - x(D.proposed[0]), height: h + 4,
-    rx: 4, fill: "var(--you-wash)", stroke: "var(--you)", "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
+  const y = 48, h = 24;
+  el("rect", {x: m.l, y, width: W - m.l - m.r, height: h, rx: 8, fill: "var(--grid)"}, svg);
+  el("rect", {x: x(Q1), y, width: x(Q3) - x(Q1), height: h, rx: 8, fill: "var(--mkt-wash)"}, svg);
   // gap bracket
-  el("rect", {x: Math.min(x(MKT), x(RENT)), y: y + h / 2 - 2, width: Math.abs(x(RENT) - x(MKT)), height: 4, rx: 2, fill: "var(--you)", opacity: .55}, svg);
+  el("rect", {x: Math.min(x(MKT), x(RENT)), y: y + h / 2 - 3, width: Math.abs(x(RENT) - x(MKT)), height: 6, rx: 3, fill: "var(--you)", opacity: .7}, svg);
   const pin = (v, c, label, top) => { el("line", {x1: x(v), x2: x(v), y1: top ? y - 16 : y, y2: top ? y + h : y + h + 16, stroke: c, "stroke-width": 3, "stroke-linecap": "round"}, svg);
-    el("circle", {cx: x(v), cy: y + h / 2, r: 7, fill: c, stroke: "var(--surface)", "stroke-width": 3}, svg);
+    el("circle", {cx: x(v), cy: y + h / 2, r: 9, fill: c, stroke: "var(--surface)", "stroke-width": 3}, svg);
     tx(svg, Math.max(57, Math.min(W - 57, x(v))), top ? y - 24 : y + h + 29, label, "strong", "middle"); };
   pin(MKT, "var(--mkt)", `Median ${gbp(MKT)}`, false);
   pin(RENT, "var(--you)", `Current rent ${gbp(RENT)}`, true);
-  const bracketY = 96;
+  if (D.proposed) {
+    const pm = (D.proposed[0] + D.proposed[1]) / 2;
+    if (D.proposed[1] > D.proposed[0]) el("rect", {x: x(D.proposed[0]), y: y + h / 2 - 3, width: x(D.proposed[1]) - x(D.proposed[0]), height: 6, rx: 3, fill: "var(--prop)", opacity: .35}, svg);
+    pin(pm, "var(--prop)", W < 520 ? "Proposal" : `Proposal ${D.proposed.map(gbp).join("–")}`, false);
+  }
+  const bracketY = 116;
   el("path", {d: `M${x(Q1)} ${bracketY - 4}v4H${x(Q3)}v-4`, fill: "none", stroke: "var(--mkt)"}, svg);
   const centre = Math.max(78, Math.min(W - 78, (x(Q1) + x(Q3)) / 2));
   tx(svg, centre, bracketY + 15, "Middle 50% of agreed rents", "lbl", "middle");
@@ -393,7 +404,7 @@ function dist() {
   el("path", {d: K.map((k, i) => (i ? "L" : "M") + x(k[0]) + "," + y(k[1])).join(""), fill: "none", stroke: "var(--mkt)", "stroke-width": 2}, svg);
   el("line", {x1: m.l, x2: W - m.r, y1: base, y2: base, class: "ax"}, svg);
   // rug of individual lets
-  D.points.forEach(p => { const c = el("circle", {cx: x(p.v), cy: base + 12, r: 3.5, fill: "var(--mkt)", "fill-opacity": .7}, svg);
+  D.points.forEach(p => { el("line", {x1: x(p.v), x2: x(p.v), y1: base + 5, y2: base + 21, stroke: "var(--mkt)", "stroke-width": 1.5, "stroke-opacity": .55, "stroke-linecap": "round"}, svg);
     const h = el("rect", {x: x(p.v) - 4, y: base + 4, width: 8, height: 16, class: "hit"}, svg);
     h.addEventListener("pointermove", e => show(e, [gbp(p.v), `let ${fmtM(p.m)} · ${p.km} km away`, "adjusted to this location & today"]));
     h.addEventListener("pointerleave", hide); });
@@ -411,17 +422,10 @@ function cells() {
   host.replaceChildren();
   const heading = $("#h-sens");
   if (gaps.length) {
-    const low = Math.min(...gaps), high = Math.max(...gaps);
-    const group = gaps.length === C.length ? `all ${gaps.length} comparisons` : `${gaps.length} available comparisons`;
-    if (low > 0 || high < 0) {
-      const amounts = [Math.abs(low), Math.abs(high)].sort((a, b) => a - b);
-      const range = [...new Set(amounts)].map(gbp).join("–");
-      heading.textContent = `Rent was ${range} ${low > 0 ? "higher" : "lower"} across ${group}`;
-    } else {
-      heading.textContent = low === high ? "Rent matched every available median"
-        : `Rent gaps ranged from ${signedGap(low)} to ${signedGap(high)}`;
-    }
+    const above = gaps.filter(g => g > 0).length;
+    heading.textContent = `Above the median in ${above} of ${gaps.length} views`;
   }
+  const gmax = Math.max(1, ...gaps.map(Math.abs));
   const months = [...new Set(C.map(c => c.months))], kms = [...new Set(C.map(c => c.km))];
   function addHeader(row, label, scope) {
     const th = document.createElement("th");
@@ -439,7 +443,8 @@ function cells() {
     months.forEach(mo => {
       const c = C.find(cell => cell.km === km && cell.months === mo);
       const td = row.insertCell();
-      if (!c || !c.n) { td.textContent = "–"; return; }
+      if (!c || !c.n) { td.textContent = "–"; td.className = "empty"; return; }
+      td.style.background = c.gap > 0 ? `color-mix(in srgb, var(--tile) ${Math.round(80 + 20 * c.gap / gmax)}%, var(--surface))` : "var(--mkt)";
       td.textContent = signedGap(c.gap);
       const count = document.createElement("span");
       count.textContent = letCount(c.n);
@@ -448,7 +453,7 @@ function cells() {
         td.className = "reference";
         const note = $("#reference-note");
         note.hidden = false;
-        note.textContent = `Outlined group · The headline uses these ${letCount(c.n)} and rounds the median to the nearest £10.`;
+        note.textContent = `Outlined: the ${letCount(c.n)} behind the headline figure.`;
       }
       td.addEventListener("pointermove", e => show(e, [`${gbp(c.median)} median`, `${letCount(c.n)} within ${km} km, last ${mo} months`]));
       td.addEventListener("pointerleave", hide);

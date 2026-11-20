@@ -25,10 +25,10 @@ copy so others can see how it works.
 
 ## The public dashboard
 
-The headline compares the current monthly rent with the local median and gives the number of comparable
-agreed lets behind it. The expected proposal has its own dashed marker. The distribution shows how many
-recent lets were cheaper, and the comparison table outlines the distance and period used for the headline.
-The remaining charts show agreed rents over time alongside the official ONS average, and individual lets by distance.
+One number up front (how far the rent sits above the local median), three headline figures (live listings,
+agreed lets analysed, recent comparables), and four charts: how many recent lets were cheaper, a grid showing
+the rent above the median at every distance and period (the group behind the headline outlined), agreed rents
+over time against the official ONS average, and every let by distance. Hover anything for the figures behind it.
 It follows the viewer's light or dark setting and works on a phone.
 
 <p align="center">
