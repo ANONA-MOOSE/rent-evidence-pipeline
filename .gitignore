@@ -1,0 +1,27 @@
+# Allow-list: nothing is committed unless it is named here. Personal data, evidence, notes,
+# databases, keys and tokens can therefore never be pushed by accident.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/requirements.txt
+!/package.json
+!/package-lock.json
+!/run_daily.sh
+!/config_example.py
+!/openrent_comps.py
+!/analysis.py
+!/dashboard.py
+!/ons_index.py
+!/area_prices.py
+!/tribunal_decisions.py
+!/ai_review.py
+!/defects_log.py
+!/epc_lookup.py
+!/public_site.py
+!/docs/
+# never, even if named above
+config_local.py
+*_token.txt
+*_key.txt
+cloudflare_*.txt

@@ -1,0 +1,5 @@
+openpyxl
+certifi
+# optional
+pypdf        # reading certificates / tribunal PDFs
+anthropic    # AI review of listing photos, floor plans and correspondence (needs an API key)
