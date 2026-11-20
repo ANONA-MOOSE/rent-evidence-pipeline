@@ -253,37 +253,24 @@ html{scroll-behavior:smooth}
 .jd-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px clamp(16px,3vw,40px)}
 .jd-brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;letter-spacing:-.01em;color:#fff;text-decoration:none;white-space:nowrap}
 .jd-brand img{width:36px;height:36px;border-radius:10px;display:block}
-.jd-links{display:flex;gap:clamp(16px,2.6vw,40px);font-size:15px}
-.jd-links a{color:rgba(244,243,239,.82);text-decoration:none;font-weight:500}
-.jd-links a:hover{color:#fff}
 .jd-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b0b0b;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:999px;white-space:nowrap}
-.jd-pill:focus-visible,.jd-ghost:focus-visible,.jd-links a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.jd-pill:focus-visible,.jd-brand:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .jd-body{flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:center;gap:clamp(24px,4vw,64px);
   padding:clamp(24px,6vh,72px) clamp(16px,3vw,40px) clamp(56px,10vh,110px);max-width:1360px;width:100%;margin:0 auto;box-sizing:border-box}
 .jd-title{font-weight:800;font-size:clamp(52px,8.4vw,128px);line-height:.92;letter-spacing:-.045em;margin:0;text-wrap:balance}
 .jd-title .o{color:#ff7d3b;display:block}
 .jd-tag{font-size:clamp(20px,2.2vw,30px);line-height:1.25;letter-spacing:-.02em;font-weight:500;color:rgba(244,243,239,.9);margin:22px 0 0;max-width:22ch}
-.jd-rule{height:2px;max-width:520px;margin:30px 0 14px;background:linear-gradient(90deg,#ff7d3b,rgba(255,125,59,.15))}
-.jd-keys{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13.5px;color:rgba(244,243,239,.78)}
-.jd-keys span{display:inline-flex;align-items:center;gap:8px}
-.jd-keys i{display:inline-block;width:34px;height:8px;border-radius:999px}
-.jd-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.jd-ghost{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.jd-ctas{display:flex;margin-top:40px}
 .jd-card{position:relative;aspect-ratio:1/1;width:100%;max-width:520px;justify-self:end;border-radius:28px;
   background:rgba(12,14,16,.58);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);
   box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
 .jd-card svg{position:absolute;inset:0;width:100%;height:100%}
-.jd-cat{position:absolute;left:42%;top:48%;width:56%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 28px rgba(57,135,229,.45)) drop-shadow(0 12px 30px rgba(0,0,0,.5));
+.jd-cat{position:absolute;left:25%;top:52%;width:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 28px rgba(57,135,229,.45)) drop-shadow(0 12px 30px rgba(0,0,0,.5));
   animation:jdFloat 7s ease-in-out infinite}
 @keyframes jdFloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-53%)}}
-.jd-stat{position:absolute;left:18px;bottom:16px;right:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;font-size:12.5px;color:rgba(244,243,239,.75)}
-.jd-stat b{display:block;font-size:26px;letter-spacing:-.03em;color:#fff;line-height:1}
-.jd-down{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(244,243,239,.75);text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-.jd-down svg{width:22px;height:22px;animation:jdBob 2.2s ease-in-out infinite}
-@keyframes jdBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-@media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-card{justify-self:start;max-width:420px}.jd-links{display:none}}
-@media (max-width:520px){.jd-pill{padding:10px 16px;font-size:14px}.jd-nav > .jd-pill{display:none}.jd-card{max-width:none}.jd-down{display:none}}
-@media (prefers-reduced-motion: reduce){.jd-bg,.jd-cat,.jd-down svg{animation:none}}
+@media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-card{justify-self:start;max-width:420px}}
+@media (max-width:520px){.jd-card{max-width:none}}
+@media (prefers-reduced-motion: reduce){.jd-bg,.jd-cat{animation:none}}
 .dash-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px;scroll-margin-top:16px}
 .dash-head h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.035em}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -297,25 +284,18 @@ html{scroll-behavior:smooth}
   <div class="jd-bg" aria-hidden="true"></div><div class="jd-mesh" aria-hidden="true"></div><div class="jd-shade" aria-hidden="true"></div>
   <nav class="jd-nav">
     <a class="jd-brand" href="#top" id="top"><img src="logo-64.png" width="36" height="36" alt="">Rent Control JUDO</a>
-    <div class="jd-links"><a href="#evidence">The evidence</a><a href="#h-trend">Trend</a><a href="#h-how">How it works</a><a id="jd-code" href="#">Code</a></div>
-    <a class="jd-pill" href="#evidence">See the evidence</a>
   </nav>
   <div class="jd-body">
     <div>
       <h1 class="jd-title">Rent Control <span class="o">JUDO</span></h1>
       <p class="jd-tag">Using the force of the market, against itself.</p>
-      <div class="jd-rule" aria-hidden="true"></div>
-      <div class="jd-keys"><span><i style="background:#3987e5"></i>Market</span><span><i style="background:#e2652f"></i>This rent</span><span><i style="background:#e66767"></i>Proposal</span></div>
-      <div class="jd-ctas"><a class="jd-pill" href="#evidence">See the evidence ↓</a><a class="jd-ghost" id="jd-code2" href="#">View the code</a></div>
+      <div class="jd-ctas"><a class="jd-pill" href="#evidence">See the evidence ↓</a></div>
     </div>
     <div class="jd-card" aria-hidden="true">
-      <svg id="jd-chart" viewBox="0 0 400 400" preserveAspectRatio="none"></svg>
+      <svg id="jd-chart" viewBox="0 0 400 400"></svg>
       <img class="jd-cat" src="logo-512.png" alt="">
-      <div class="jd-stat"><div><b id="jd-gap"></b>a month above the local median</div><div style="text-align:right"><b id="jd-n"></b>agreed lets compared</div></div>
     </div>
   </div>
-  <a class="jd-down" href="#evidence" aria-label="Scroll to the evidence"><span>Scroll</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
 </header>
 <main>
   <div class="dash-head" id="evidence">
@@ -550,7 +530,7 @@ function trend() {
   const box = $("#c-trend"); box.innerHTML = "";
   legend("#lg-trend", [["Agreed rents: median", css("--mkt")], ["middle half", css("--mkt-wash"), "b"], ["Borough average (ONS)", css("--ok")], ["This tenancy", css("--you")]]);
   const T = D.trend; if (!T.length) return; const O = D.ons.filter(o => o.m >= T[0].m);
-  const W = Math.max(300, box.clientWidth), H = 300, m = {l: 52, r: W < 520 ? 12 : 96, t: 14, b: 28};
+  const W = Math.max(300, box.clientWidth), H = 300, m = {l: 52, r: W < 520 ? 12 : 112, t: 14, b: 28};
   const t0 = new Date(T[0].m + "-01"), t1 = new Date();
   const vals = T.flatMap(t => [t.q1, t.q3]).concat(O.map(o => o.v), D.history.map(h => h.rent), D.proposed || []);
   const lo = Math.floor((Math.min(...vals) - 50) / 250) * 250, hi = Math.ceil((Math.max(...vals) + 50) / 250) * 250;
@@ -568,11 +548,12 @@ function trend() {
   let p = ""; D.history.forEach((h, i) => { const nx = i + 1 < D.history.length ? D.history[i + 1].from + "-01" : t1; const xs = Math.max(m.l, x(h.from + "-01"));
     p += (i ? "L" : "M") + xs + "," + y(h.rent) + "L" + x(nx) + "," + y(h.rent); });
   el("path", {d: p, fill: "none", stroke: "var(--you)", "stroke-width": 3, "stroke-linejoin": "round"}, svg);
-  if (D.proposed) { const xs = x(t1); el("rect", {x: xs - 2, y: y(D.proposed[1]), width: 6, height: y(D.proposed[0]) - y(D.proposed[1]), rx: 3, fill: "var(--you)", opacity: .35}, svg); }
+  if (D.proposed) el("circle", {cx: x(t1), cy: y((D.proposed[0] + D.proposed[1]) / 2), r: 6, fill: "var(--prop)", stroke: "var(--surface)", "stroke-width": 2}, svg);
   if (W >= 520) { const last = T[T.length - 1];
     tx(svg, W - m.r + 8, y(D.rent) + 4, `This ${gbp(D.rent)}`, "strong");
     tx(svg, W - m.r + 8, y(last.med) + 4, `Median ${gbp(last.med)}`, "lbl");
-    if (O.length) tx(svg, W - m.r + 8, y(O[O.length - 1].v) + (Math.abs(y(O[O.length - 1].v) - y(last.med)) < 14 ? 16 : 4), `ONS ${gbp(O[O.length - 1].v)}`, "lbl"); }
+    if (O.length) tx(svg, W - m.r + 8, y(O[O.length - 1].v) + (Math.abs(y(O[O.length - 1].v) - y(last.med)) < 14 ? 16 : 4), `ONS ${gbp(O[O.length - 1].v)} (${new Date(O[O.length - 1].m + "-01").toLocaleDateString("en-GB", {month: "short"})})`, "lbl");
+    if (D.proposed) tx(svg, W - m.r + 14, y((D.proposed[0] + D.proposed[1]) / 2) + 4, "Proposal", "lbl"); }
   const cross = el("line", {y1: m.t, y2: H - m.b, stroke: "var(--axis)", opacity: 0}, svg);
   const ov = el("rect", {x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, class: "hit"}, svg);
   ov.addEventListener("pointermove", e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const sx = pt.matrixTransform(svg.getScreenCTM().inverse()).x;
@@ -606,24 +587,42 @@ function byKm() {
 }
 
 function judo() {
-  if (D.repo) { $("#jd-code").href = D.repo; $("#jd-code2").href = D.repo; } else { $("#jd-code").remove(); $("#jd-code2").remove(); }
-  $("#jd-gap").textContent = D.gap == null ? "–" : gbp(Math.abs(D.gap));
-  $("#jd-n").textContent = P.length;
-  // the card's chart: grid, the real distribution as a glowing blue curve, this rent as an orange line
+  // The card's chart, over time: market (blue) and this rent (orange), the gap between them shaded,
+  // and a red dashed step up to the expected proposal: a red dot at the top right.
   const svg = $("#jd-chart"); svg.innerHTML = "";
-  const S = 400, pad = 24, lo = Math.min(...P, RENT) - 150, hi = Math.max(...P, RENT) + 150;
-  const x = v => pad + (v - lo) / (hi - lo) * (S - 2 * pad);
-  const K = kde(P, lo, hi, 80), ym = Math.max(...K.map(k => k[1])), y = d => S * 0.82 - d / ym * S * 0.6;
+  const S = 400, T = D.trend; if (!T.length || !D.history.length) return;
+  const sm = T.map((_, i) => { let a = 0, b = 0; T.forEach((v, j) => { const k = Math.exp(-(((i - j) / 4) ** 2) / 2) * v.n; a += k * v.med; b += k; }); return a / b; });   // Gaussian smooth, weighted by lets
+  const pm = D.proposed ? (D.proposed[0] + D.proposed[1]) / 2 : null;
+  const t0 = +new Date(T[0].m + "-15"), t1 = Date.now();
+  const xL = S * .26, xR = S * .80, xP = S * .91;
+  const x = t => xL + (t - t0) / (t1 - t0) * (xR - xL);
+  const vals = sm.concat(D.history.map(h => h.rent), pm ? [pm] : []);
+  const lo = Math.min(...vals) - 40, hi = Math.max(...vals) + 40, y = v => S * .82 - (v - lo) / (hi - lo) * S * .62;
+  const rentAt = t => { let r = D.history[0].rent; D.history.forEach(h => { if (+new Date(h.from + "-01") <= t) r = h.rent; }); return r; };
   const defs = el("defs", {}, svg), f = el("filter", {id: "jdglow", filterUnits: "userSpaceOnUse", x: 0, y: 0, width: S, height: S}, defs);
   el("feGaussianBlur", {stdDeviation: 6, result: "b"}, f); const mg = el("feMerge", {}, f); el("feMergeNode", {in: "b"}, mg); el("feMergeNode", {in: "SourceGraphic"}, mg);
+  const fade = (id, c, a1) => { const g = el("linearGradient", {id, gradientUnits: "userSpaceOnUse", x1: S * .2, x2: S * .5, y1: 0, y2: 0}, defs);
+    el("stop", {offset: 0, "stop-color": c, "stop-opacity": 0}, g); el("stop", {offset: 1, "stop-color": c, "stop-opacity": a1}, g); };
+  fade("jdB", "#3987e5", 1); fade("jdO", "#ff7d3b", 1); fade("jdW", "#ff7d3b", .16);
   for (let i = 1; i < 6; i++) { el("line", {x1: S * i / 6, x2: S * i / 6, y1: 0, y2: S, stroke: "rgba(255,255,255,.07)"}, svg);
     el("line", {x1: 0, x2: S, y1: S * i / 6, y2: S * i / 6, stroke: "rgba(255,255,255,.07)"}, svg); }
-  el("path", {d: K.map((k, i) => (i ? "L" : "M") + x(k[0]) + "," + y(k[1])).join(""), fill: "none", stroke: "#3987e5", "stroke-width": 4, filter: "url(#jdglow)", "stroke-linecap": "round"}, svg);
-  el("line", {x1: x(RENT), x2: x(RENT), y1: S * .12, y2: S * .9, stroke: "#ff7d3b", "stroke-width": 4, filter: "url(#jdglow)"}, svg);
-  if (D.proposed) { const pm = (D.proposed[0] + D.proposed[1]) / 2; el("line", {x1: x(pm), x2: x(pm), y1: S * .2, y2: S * .9, stroke: "#e66767", "stroke-width": 2, "stroke-dasharray": "4 6", opacity: .8}, svg); }
-  // place the cat to the left of this rent's line, so the line stays visible beside it
-  const rx = x(RENT) / S * 100, w = Math.max(40, Math.min(56, rx * 0.9));
-  const cat = $(".jd-cat"); cat.style.width = w + "%"; cat.style.left = Math.max(w / 2 + 2, rx - w / 2 - 4) + "%";
+  const ts = T.map(t => +new Date(t.m + "-15"));
+  const mp = ts.map((t, i) => [x(t), y(sm[i])]);
+  const d = mp.map((p, i) => (i ? "L" : "M") + p).join("");
+  let r = `M${x(t0)},${y(rentAt(t0))}`;
+  D.history.forEach(h => { const t = +new Date(h.from + "-01"); if (t > t0 && t < t1) r += `L${x(t)},${y(rentAt(t - 1))}L${x(t)},${y(h.rent)}`; });
+  r += `L${xR},${y(rentAt(t1))}`;
+  el("path", {d: ts.map((t, i) => (i ? "L" : "M") + x(t) + "," + y(rentAt(t))).join("") + ts.map((t, i) => "L" + x(t) + "," + y(sm[i])).reverse().join("") + "Z", fill: "url(#jdW)"}, svg);
+  el("path", {d, fill: "none", stroke: "url(#jdB)", "stroke-width": 5, filter: "url(#jdglow)", "stroke-linecap": "round", "stroke-linejoin": "round"}, svg);
+  el("path", {d: r, fill: "none", stroke: "url(#jdO)", "stroke-width": 5, filter: "url(#jdglow)", "stroke-linejoin": "round"}, svg);
+  const lab = (x0, y0, t, c) => { const e = tx(svg, x0, y0, t, null, "end"); e.style.fill = c; e.setAttribute("font-size", 17); e.setAttribute("font-weight", 600); };
+  if (pm) {
+    el("path", {d: `M${xR},${y(rentAt(t1))}L${xP},${y(rentAt(t1))}L${xP},${y(pm)}`, fill: "none", stroke: "#e66767", "stroke-width": 2, "stroke-dasharray": "3 5"}, svg);
+    el("circle", {cx: xP, cy: y(pm), r: 10, fill: "#e66767", filter: "url(#jdglow)"}, svg);
+    lab(xP + 10, y(pm) - 22, "Proposal", "#f09090");
+  }
+  lab(xR, y(rentAt(t1)) - 14, "This rent", "#ffa070");
+  lab(xR, y(sm[sm.length - 1]) + 30, "Market", "#7fb2f0");
 }
 
 function reveals() {

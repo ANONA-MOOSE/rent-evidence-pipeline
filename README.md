@@ -11,7 +11,7 @@
 <p align="center"><a href="https://rent-evidence-demo.pages.dev"><b>Live demo →</b></a></p>
 
 <p align="center">
-  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/hero-dark.jpg" width="820" alt="Rent Control JUDO: the cat logo over a glowing chart of agreed rents, with the example rent marked"></a>
+  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/hero-dark.jpg" width="820" alt="Rent Control JUDO: the cat logo beside a glowing chart over time, the example rent above the market and the expected proposal as a red dot"></a>
 </p>
 
 Since 1 May 2026 (the Renters' Rights Act 2025), a private landlord in England can only raise the rent with a
@@ -27,8 +27,8 @@ copy so others can see how it works.
 
 ## The public dashboard
 
-A full-screen opening section (the cat over the live rent curve, with the example rent and the expected proposal
-marked) scrolls smoothly down to the evidence: one number up front (how far the rent sits above the local median), three headline figures (live listings,
+A full-screen opening section (the cat beside the live market and rent lines over time, the expected proposal a red
+dot at the top right) scrolls smoothly down to the evidence: one number up front (how far the rent sits above the local median), three headline figures (live listings,
 agreed lets analysed, recent comparables), and four charts: how many recent lets were cheaper, a grid showing
 the rent above the median at every distance and period (the group behind the headline outlined), agreed rents
 over time against the official ONS average, and every let by distance. Hover anything for the figures behind it.
