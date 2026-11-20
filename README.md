@@ -11,7 +11,7 @@ are comparable, adjusted openly, and dated proof of the flat's condition.
 This project builds that evidence for one flat, keeps it up to date every morning, and publishes an anonymised
 copy so others can see how it works.
 
-**Live demo:** _link added once deployed_ · a worked example for a two-bed flat in south-east London.
+**Live demo:** [rent-evidence-demo.pages.dev](https://rent-evidence-demo.pages.dev) · a worked example for a two-bed flat in south-east London.
 
 ![How the daily pipeline works](docs/pipeline.svg)
 

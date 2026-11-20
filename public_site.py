@@ -11,9 +11,9 @@ OpenRent listing text, and full postcodes in tribunal decisions. Before anything
 privacy_check() scans the finished page for PUBLIC_BLOCKLIST words (config_local.py), email
 addresses and full UK postcodes; if it finds any, nothing is published.
 
-Cloudflare: put an API token with "Cloudflare Pages: Edit" in cloudflare_token.txt, your account ID
-in cloudflare_account.txt, and (optionally) a project name in cloudflare_project.txt. All three files
-are git-ignored. Uploads use Wrangler (installed in node_modules).
+Cloudflare: sign in once with `npx wrangler login` (browser), or put an API token with "Cloudflare Pages:
+Edit" in cloudflare_token.txt (+ account ID in cloudflare_account.txt). Optional project name in
+cloudflare_project.txt (default "rent-evidence-demo"). All three files are git-ignored. Uploads use Wrangler.
 """
 import glob
 import json
@@ -132,15 +132,25 @@ def _npx():
 def deploy():
     token, account = _read("cloudflare_token.txt"), _read("cloudflare_account.txt")
     project = _read("cloudflare_project.txt") or "rent-evidence-demo"
-    if not token or not account:
-        print("Public site built but not uploaded: add cloudflare_token.txt and cloudflare_account.txt (see public_site.py).")
-        return False
-    env = dict(os.environ, CLOUDFLARE_API_TOKEN=token, CLOUDFLARE_ACCOUNT_ID=account,
-               PATH=os.path.dirname(_npx()) + ":" + os.environ.get("PATH", "/usr/bin:/bin"))
     npx = _npx()
-    # Create the project on first use (harmless "already exists" error afterwards).
-    subprocess.run([npx, "wrangler", "pages", "project", "create", project, "--production-branch", "main"],
-                   cwd=HERE, env=env, capture_output=True, text=True, timeout=120)
+    env = dict(os.environ, PATH=os.path.dirname(npx) + ":" + os.environ.get("PATH", "/usr/bin:/bin"))
+    if token:                                  # API token, if you prefer one
+        env["CLOUDFLARE_API_TOKEN"] = token
+    if account:
+        env["CLOUDFLARE_ACCOUNT_ID"] = account
+    if not token:                              # otherwise use Wrangler's saved browser login (`npx wrangler login`)
+        who = subprocess.run([npx, "wrangler", "whoami"], cwd=HERE, env=env, capture_output=True, text=True, timeout=60)
+        if "You are logged in" not in who.stdout + who.stderr:
+            print("Public site built but not uploaded: run `npx wrangler login` once (or add cloudflare_token.txt).")
+            return False
+    # Create the Pages project on first use. --force keeps it on classic Pages (address <project>.pages.dev);
+    # newer Wrangler otherwise creates a Worker whose workers.dev address includes the account's subdomain,
+    # which can contain your name. Harmless "already exists" error on later runs.
+    listed = subprocess.run([npx, "wrangler", "pages", "project", "list"], cwd=HERE, env=env,
+                            capture_output=True, text=True, timeout=120)
+    if project not in listed.stdout:
+        subprocess.run([npx, "wrangler", "pages", "project", "create", project, "--production-branch", "main", "--force"],
+                       cwd=HERE, env=env, capture_output=True, text=True, timeout=120)
     r = subprocess.run([npx, "wrangler", "pages", "deploy", OUT_DIR, "--project-name", project, "--branch", "main",
                         "--commit-dirty=true"], cwd=HERE, env=env, capture_output=True, text=True, timeout=300)
     out = (r.stdout + r.stderr).strip()
@@ -157,7 +167,7 @@ def run(do_deploy=True):
     print(f"Public site built: {path} (privacy check passed)")
     if do_deploy:
         ok = deploy()
-        if ok is False and os.path.exists(os.path.join(HERE, "cloudflare_token.txt")):
+        if ok is False:
             oc.notify("Rent comparables", "Public site upload to Cloudflare failed. See logs/daily.log.")
         return ok
     return True
