@@ -11,7 +11,7 @@
 <p align="center"><a href="https://rent-evidence-demo.pages.dev"><b>Live demo →</b></a></p>
 
 <p align="center">
-  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/hero-dark.jpg" width="820" alt="Rent Control JUDO with a cat mascot above a chart and a fading bracket from the landlord’s expected proposal to below the current rent"></a>
+  <a href="https://rent-evidence-demo.pages.dev"><img src="docs/screenshots/hero-dark.jpg" width="820" alt="Rent Control JUDO with a cat mascot above a chart showing the landlord’s proposal and a lavender new-rent marker below the current rent"></a>
 </p>
 
 Since 1 May 2026 (the Renters' Rights Act 2025), a private landlord in England can only raise the rent with a
@@ -30,8 +30,8 @@ copy so others can see how it works.
 ## The public dashboard
 
 A full-screen opening section shows the cat mascot perched on a chart of the local market and the example rent.
-A red dot marks the landlord's expected proposal. A lavender bracket runs down from the proposal and fades below
-the current rent to show that the tribunal can set a lower rent. The page scrolls smoothly down to the evidence: one number up front (how far the rent sits above the local median), three headline figures (live listings,
+A red dot marks the landlord's expected proposal. A lavender dot shows an example new rent between the latest
+charted market median and the current rent, subject to the proposal cap. The page scrolls smoothly down to the evidence: one number up front (how far the rent sits above the local median), three headline figures (live listings,
 agreed lets analysed, recent comparables), and four charts: how many recent lets were cheaper, a grid showing
 the rent above the median at every distance and period (the group behind the headline outlined), agreed rents
 over time against the official ONS average, and every let by distance. Hover anything for the figures behind it.
@@ -44,7 +44,7 @@ It follows the viewer's light or dark setting and works on a phone.
 <p align="center">
   <img src="docs/screenshots/charts-light.jpg" width="510" alt="Light mode: agreed rents over time, and agreed rents by distance with the example rent marked">
   &nbsp;
-  <img src="docs/screenshots/mobile-dark.jpg" width="280" alt="Phone view of the hero chart with a bracket showing that the tribunal can set rent below the current rent">
+  <img src="docs/screenshots/mobile-dark.jpg" width="280" alt="Phone view of the hero chart with a red landlord’s proposal dot and a lavender new-rent dot">
 </p>
 
 The full working (evidence log, every adjustment line by line, tribunal decisions, a spreadsheet laid out for the

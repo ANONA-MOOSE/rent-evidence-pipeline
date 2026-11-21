@@ -267,7 +267,7 @@ html{scroll-behavior:smooth}
   background:rgba(12,14,16,.58);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);
   box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
 .jd-card svg{position:absolute;inset:0;width:100%;height:100%}
-.jd-cat{position:absolute;left:1%;top:-22%;width:42%;transform:rotate(-8deg);pointer-events:none;
+.jd-cat{position:absolute;left:1%;top:-27%;width:50%;transform:rotate(-8deg);pointer-events:none;
   filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 18px 28px rgba(0,0,0,.55))}
 .jd-down{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(244,243,239,.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
 .jd-down svg{animation:jdBob 2.2s ease-in-out infinite}
@@ -280,7 +280,7 @@ html{scroll-behavior:smooth}
 @keyframes jdPulse{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
 @media (max-width:900px){.jd-body{grid-template-columns:1fr}.jd-art{justify-self:center;max-width:440px;margin-top:20%}}
 @media (max-width:520px){.jd-art{max-width:none;margin-top:26%}.jd-cat{left:2%;top:-24%;width:46%}.jd-gh span{display:none}.jd-gh{padding:10px}.jd-down{display:none}}
-@media (prefers-reduced-motion: reduce){.jd-bg,.jd-down svg,.jd-pulse{animation:none}.jd-draw,.jd-fade,.jd-late,.jd-lab{animation:none;opacity:1;stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.jd-bg,.jd-down svg,.jd-pulse{animation:none}.jd-draw,.jd-fade,.jd-late,.jd-lab{animation:none;opacity:1}.jd-draw{stroke-dashoffset:0}}
 .dash-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px;scroll-margin-top:16px}
 .dash-head h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.035em}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -473,7 +473,7 @@ function dist() {
   const x = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r);
   const K = kde(P, lo, hi), ymax = Math.max(...K.map(k => k[1]));
   const base = H - m.b - 26, y = d => base - d / ymax * (base - m.t);
-  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Distribution of comparable agreed rents with this rent marked"}, box);
+  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Distribution of comparable agreed rents with the rent marked"}, box);
   const g = el("defs", {}, svg); const lg = el("linearGradient", {id: "kd", x1: 0, x2: 0, y1: 0, y2: 1}, g);
   el("stop", {offset: "0%", "stop-color": css("--mkt"), "stop-opacity": .45}, lg); el("stop", {offset: "100%", "stop-color": css("--mkt"), "stop-opacity": .04}, lg);
   el("path", {d: `M${x(K[0][0])},${base}` + K.map(k => `L${x(k[0])},${y(k[1])}`).join("") + `L${x(K[K.length - 1][0])},${base}Z`, fill: "url(#kd)"}, svg);
@@ -487,7 +487,7 @@ function dist() {
   const vline = (v, c, label, wgt, side) => { el("line", {x1: x(v), x2: x(v), y1: m.t - 6, y2: base, stroke: c, "stroke-width": wgt}, svg);
     tx(svg, x(v) + (side === "end" ? -6 : 6), m.t - 2, label, "strong", side); };
   vline(MKT, "var(--mkt)", `Median ${gbp(MKT)}`, 2, RENT >= MKT ? "end" : "start");
-  vline(RENT, "var(--you)", `This rent ${gbp(RENT)}`, 3, RENT >= MKT ? "start" : "end");
+  vline(RENT, "var(--you)", `The rent ${gbp(RENT)}`, 3, RENT >= MKT ? "start" : "end");
   ticks(lo, hi, W < 520 ? 4 : 7).forEach(t => tx(svg, x(t), H - 4, gbp(t), null, "middle"));
 }
 
@@ -539,7 +539,7 @@ function cells() {
 
 function trend() {
   const box = $("#c-trend"); box.innerHTML = "";
-  legend("#lg-trend", [["Agreed rents: median", css("--mkt")], ["middle half", css("--mkt-wash"), "b"], ["Borough average (ONS)", css("--ok")], ["This tenancy", css("--you")]]);
+  legend("#lg-trend", [["Agreed rents: median", css("--mkt")], ["middle half", css("--mkt-wash"), "b"], ["Borough average (ONS)", css("--ok")], ["The rent", css("--you")]]);
   const T = D.trend; if (!T.length) return; const O = D.ons.filter(o => o.m >= T[0].m);
   const W = Math.max(300, box.clientWidth), H = 300, m = {l: 52, r: W < 520 ? 12 : 112, t: 14, b: 28};
   const t0 = new Date(T[0].m + "-01"), t1 = new Date();
@@ -561,7 +561,7 @@ function trend() {
   el("path", {d: p, fill: "none", stroke: "var(--you)", "stroke-width": 3, "stroke-linejoin": "round"}, svg);
   if (D.proposed) el("circle", {cx: x(t1), cy: y((D.proposed[0] + D.proposed[1]) / 2), r: 6, fill: "var(--prop)", stroke: "var(--surface)", "stroke-width": 2}, svg);
   if (W >= 520) { const last = T[T.length - 1];
-    tx(svg, W - m.r + 8, y(D.rent) + 4, `This ${gbp(D.rent)}`, "strong");
+    tx(svg, W - m.r + 8, y(D.rent) + 4, `The rent ${gbp(D.rent)}`, "strong");
     tx(svg, W - m.r + 8, y(last.med) + 4, `Median ${gbp(last.med)}`, "lbl");
     if (O.length) tx(svg, W - m.r + 8, y(O[O.length - 1].v) + (Math.abs(y(O[O.length - 1].v) - y(last.med)) < 14 ? 16 : 4), `ONS ${gbp(O[O.length - 1].v)} (${new Date(O[O.length - 1].m + "-01").toLocaleDateString("en-GB", {month: "short"})})`, "lbl");
     if (D.proposed) tx(svg, W - m.r + 14, y((D.proposed[0] + D.proposed[1]) / 2) + 4, "Proposal", "lbl"); }
@@ -573,18 +573,18 @@ function trend() {
     const o = O.reduce((b, v) => !b || Math.abs(new Date(v.m) - d) < Math.abs(new Date(b.m) - d) ? v : b, null);
     const h = [...D.history].reverse().find(h => h.from <= key);
     cross.setAttribute("x1", sx); cross.setAttribute("x2", sx); cross.setAttribute("opacity", 1);
-    show(e, [fmtM(key), `Median agreed ${gbp(t.med)} (${t.n} lets)`, ...(o ? [`ONS average ${gbp(o.v)}`] : []), ...(h ? [`This tenancy ${gbp(h.rent)}`] : [])]); });
+    show(e, [fmtM(key), `Median agreed ${gbp(t.med)} (${t.n} lets)`, ...(o ? [`ONS average ${gbp(o.v)}`] : []), ...(h ? [`The rent ${gbp(h.rent)}`] : [])]); });
   ov.addEventListener("pointerleave", () => { cross.setAttribute("opacity", 0); hide(); });
 }
 
 function byKm() {
   const box = $("#c-km"); box.innerHTML = "";
-  legend("#lg-km", [["Cheaper than this rent", css("--mkt"), "d"], ["Same or dearer", css("--muted"), "d"], ["This rent", css("--you")]]);
+  legend("#lg-km", [["Cheaper than the rent", css("--mkt"), "d"], ["Same or dearer", css("--muted"), "d"], ["The rent", css("--you")]]);
   const W = Math.max(300, box.clientWidth), H = 260, m = {l: 52, r: 12, t: 16, b: 30};
   const vals = P.concat(RENT); const lo = Math.floor((Math.min(...vals) - 100) / 250) * 250, hi = Math.ceil((Math.max(...vals) + 100) / 250) * 250;
   const kmax = Math.ceil(Math.max(...D.points.map(p => p.km), 1));
   const x = k => m.l + k / kmax * (W - m.l - m.r), y = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
-  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Agreed rents by distance, with this rent marked"}, box);
+  const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Agreed rents by distance, with the rent marked"}, box);
   ticks(lo, hi, 5).forEach(t => { el("line", {x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: "gl"}, svg); tx(svg, m.l - 8, y(t) + 4, gbp(t), null, "end"); });
   for (let k = 0; k <= kmax; k++) tx(svg, x(k), H - 8, `${k} km`, null, "middle");
   el("rect", {x: m.l, y: y(RENT), width: W - m.l - m.r, height: Math.max(0, y(lo) - y(RENT)), fill: "var(--mkt-wash)", opacity: .5}, svg);
@@ -594,7 +594,7 @@ function byKm() {
     const h = el("circle", {cx: x(p.km), cy: y(p.v), r: 10, class: "hit"}, svg);
     h.addEventListener("pointermove", e => { c.setAttribute("r", 7); show(e, [gbp(p.v), `${p.km} km away · let ${fmtM(p.m)}`, below ? `${gbp(RENT - p.v)} cheaper` : "same or dearer"]); });
     h.addEventListener("pointerleave", () => { c.setAttribute("r", 5); hide(); }); });
-  tx(svg, W - m.r, y(RENT) - 8, `This rent ${gbp(RENT)}`, "strong", "end");
+  tx(svg, W - m.r, y(RENT) - 8, `The rent ${gbp(RENT)}`, "strong", "end");
 }
 
 function judo() {
@@ -604,11 +604,11 @@ function judo() {
   const smooth = key => T.map((_, i) => { let a = 0, b = 0; T.forEach((v, j) => { const k = Math.exp(-(((i - j) / 3.5) ** 2) / 2) * v.n; a += k * v[key]; b += k; }); return a / b; });
   const md = smooth("med"), q1 = smooth("q1"), q3 = smooth("q3");
   const pm = D.proposed ? (D.proposed[0] + D.proposed[1]) / 2 : null;
-  const showTribunalRange = pm !== null && pm > D.rent;
+  const marketMedian = md[md.length - 1];
+  const newRent = pm === null ? null : Math.min(pm, marketMedian + (D.rent - marketMedian) * .65);
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", "Rent history and comparable agreed rents over time." + (pm === null ? "" :
-    ` The expected landlord proposal is ${gbp(pm)} a month.`) + (showTribunalRange ?
-    " The proposal caps the tribunal rent, which can fall below the current rent." : ""));
+    ` The expected landlord proposal is ${gbp(pm)} a month. The new rent marker shows an example of ${gbp(newRent)} a month, using the current rent and market median as reference points.`));
   const t0 = +new Date(T[0].m + "-01"), t1 = Date.now(), tp = t1 + 120 * 864e5;     // proposal shown ~4 months on
   const xL = S * .07, xP = S * .79;
   const x = t => xL + (t - t0) / (tp - t0) * (xP - xL);
@@ -637,22 +637,24 @@ function judo() {
   r += `L${x(t1)},${y(rentAt(t1))}`;
   el("path", {d: r, fill: "none", stroke: "#ff7d3b", "stroke-width": 4.5, filter: "url(#jdglow)", "stroke-linejoin": "round", "stroke-linecap": "round", pathLength: 1, class: "jd-draw"}, svg);
   const lab = (x0, y0, t, c) => { const e = tx(svg, x0, y0, t, "jd-lab", "end"); e.style.fill = c; e.style.fontSize = "13px"; e.style.fontWeight = 650; };
+  const glowNode = (cx, cy, colour) => {
+    el("circle", {cx, cy, r: 9, fill: "none", stroke: colour, "stroke-width": 2, class: "jd-pulse"}, svg);
+    return el("circle", {cx, cy, r: 9, fill: colour, filter: "url(#jdglow)", class: "jd-late"}, svg);
+  };
   if (pm !== null) {
-    el("path", {d: `M${x(t1)},${y(rentAt(t1))}L${xP},${y(rentAt(t1))}L${xP},${y(pm)}`, fill: "none", stroke: "#e66767", "stroke-width": 2.5, "stroke-dasharray": "3 5", class: "jd-late"}, svg);
-    el("circle", {cx: xP, cy: y(pm), r: 9, fill: "none", stroke: "#e66767", "stroke-width": 2, class: "jd-pulse"}, svg);
-    el("circle", {cx: xP, cy: y(pm), r: 9, fill: "#e66767", filter: "url(#jdglow)", class: "jd-late"}, svg);
-    lab(xP + 10, y(pm) - 20, "Expected proposal", "#f3a0a0");
-  }
-  if (showTribunalRange) {
-    const bracketX = S * .93, currentY = y(D.rent), endY = Math.min(S * .89, currentY + 132);
-    const colour = "#d0b8ff";
-    const fade = el("linearGradient", {id: "jdTribunalFade", gradientUnits: "userSpaceOnUse", x1: 0, x2: 0, y1: currentY, y2: endY}, defs);
-    el("stop", {offset: 0, "stop-color": colour}, fade);
-    el("stop", {offset: 1, "stop-color": colour, "stop-opacity": 0}, fade);
-    el("path", {d: `M${xP + 12},${y(pm)}H${bracketX}V${endY}`, fill: "none", stroke: "url(#jdTribunalFade)", "stroke-width": 2, "stroke-linejoin": "round", class: "jd-late"}, svg);
-    el("line", {x1: bracketX - 5, x2: bracketX + 5, y1: currentY, y2: currentY, stroke: "#ffa070", "stroke-width": 2, class: "jd-late"}, svg);
-    const labelY = Math.min(currentY + 28, S * .77);
-    ["Tribunal can", "set rent below", "current rent"].forEach((text, i) => lab(bracketX - 12, labelY + i * 16, text, colour));
+    const currentX = x(t1), currentY = y(rentAt(t1)), proposalY = y(pm);
+    const across = xP - currentX;
+    // Fit complete dash cycles across the step so a dash wraps around the corner.
+    const cycle = across / Math.max(1, Math.round(across / 8));
+    el("path", {d: `M${currentX},${currentY}H${xP}V${proposalY}`, fill: "none", stroke: "#e66767", "stroke-width": 2.5,
+      "stroke-dasharray": cycle / 2, "stroke-dashoffset": cycle / 4, "stroke-linejoin": "round", class: "jd-late"}, svg);
+    glowNode(xP, proposalY, "#e66767");
+    lab(xP + 10, proposalY - 20, "Landlord’s proposal", "#f3a0a0");
+
+    const newRentX = S * .93, newRentY = y(newRent), colour = "#d0b8ff";
+    const node = glowNode(newRentX, newRentY, colour);
+    el("title", {}, node).textContent = "Example new rent using the market median and current rent as reference points";
+    lab(newRentX + 10, newRentY + 25, "New rent", colour);
   }
   lab(x(t1) - 4, y(rentAt(t1)) - 14, "Current rent", "#ffa070");
   lab(x(ts[ts.length - 1]), y(q1[q1.length - 1]) + 26, "Market", "#8dbcf3");
